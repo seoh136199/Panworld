@@ -6,33 +6,45 @@ public class Game {
     public static GameManager gameManager;
     public static BgImage bgImage;
     public static Castle castle;
+
+    public enum Part {
+        programming, design, art
+    }
+
+    public enum MemberType {
+        probationary, regular, honorary
+    }
+
 }
 
 public class GameManager : MonoBehaviour {
 
-    [SerializeField] private const int YEAR_TO_DAY = 20;
-    [SerializeField] private const int DAY_TO_SEC = 60;
-    [SerializeField] private readonly int[] BOUNDARY = { 0, 15, 30, 45 };
+    [SerializeField] private const int YEAR_TO_WEEK = 12;
+    [SerializeField] private const int WEEK_TO_SEC = 40;
+    [SerializeField] private readonly int[] BOUNDARY = { 0, 30 };
     [SerializeField] private int crYear = 0;
-    [SerializeField] private int crDay = 0;
+    [SerializeField] private int crWeek = 0;
     [SerializeField] private int preSec = 0;
     [SerializeField] private int crSec = 0;
-    [SerializeField] private double time = 0;
+
+    [SerializeField] private double timeSec = 0;
+    [SerializeField] private int timeWeek = 0;
 
     private void CalTime() {
-        time += Time.deltaTime;
-        crSec = (int)time;
+        timeSec += Time.deltaTime;
+        crSec = (int)timeSec;
 
-        if (crSec >= DAY_TO_SEC) {
-            int deltaDay = crSec / DAY_TO_SEC;
-            crDay += deltaDay;
-            crSec -= deltaDay * DAY_TO_SEC;
-            time -= deltaDay * DAY_TO_SEC;
+        if (crSec >= WEEK_TO_SEC) {
+            int deltaWeek = crSec / WEEK_TO_SEC;
+            crWeek += deltaWeek;
+            timeWeek += deltaWeek;
+            crSec -= deltaWeek * WEEK_TO_SEC;
+            timeSec -= deltaWeek * WEEK_TO_SEC;
         }
-        if (crDay >= YEAR_TO_DAY) {
-            int deltaYear = crDay / YEAR_TO_DAY;
+        if (crWeek >= YEAR_TO_WEEK) {
+            int deltaYear = crWeek / YEAR_TO_WEEK;
             crYear += deltaYear;
-            crDay -= deltaYear * YEAR_TO_DAY;
+            crWeek -= deltaYear * YEAR_TO_WEEK;
         }
 
         for (int i = 0; i < BOUNDARY.Length; i++) {

@@ -19,14 +19,10 @@ public class BgImage : MonoBehaviour {
         image1 = transform.GetChild(1).GetComponent<Image>();
     }
 
-    void Update() {
-        
-    }
-
     public void ChangeImage(int num) {
         IEnumerator Fade() {
             isFading = true;
-            image0.sprite = imagesInfo[(num + 3) % 4];
+            image0.sprite = imagesInfo[(num + 1) % 2];
             image1.sprite = imagesInfo[num];
             image0.color = new(1, 1, 1, 1);
 

@@ -27,14 +27,11 @@ public class Castle : MonoBehaviour {
         image1 = transform.GetChild(1).GetComponent<Image>();
     }
 
-    void Update() {
-
-    }
 
     public void ChangeImage(int num) {
         IEnumerator Fade() {
             isFading = true;
-            image0.sprite = imagesInfos[level].images[(num + 3) % 4];
+            image0.sprite = imagesInfos[level].images[(num + 1) % 2];
             image1.sprite = imagesInfos[level].images[num];
             image0.color = new(1, 1, 1, 1);
 
