@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 864483407680618292}
   - component: {fileID: 8511802631346132431}
   - component: {fileID: 4506160165244234801}
+  - component: {fileID: 1685259772134109464}
   m_Layer: 0
   m_Name: Slot
   m_TagString: Untagged
@@ -59,6 +60,7 @@ MonoBehaviour:
   lockImage: {fileID: 21300000, guid: ad94d8670d765734f89cb826333a5850, type: 3}
   fillImage: {fileID: 21300000, guid: ee08e527f002b784a9ebb72f1d9b3713, type: 3}
   myImage: {fileID: 0}
+  myMember: {fileID: 0}
 --- !u!222 &8511802631346132431
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -97,3 +99,29 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!61 &1685259772134109464
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19945597400420189}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 130, y: 130}
+  m_EdgeRadius: 0

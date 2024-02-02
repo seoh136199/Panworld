@@ -40,6 +40,9 @@ public class GameManager : MonoBehaviour {
     public Slot[] restSlots = new Slot[8];
 
     [SerializeField] private GameObject slotArea;
+    [SerializeField] private Member mouseDownMember;
+    [SerializeField] private Slot mouseDownSlot;
+    [SerializeField] private bool isDraging = false;
 
     public int crWorkerSlotRemainCnt = 0, crResterSlotRemainCnt = 0;
 
@@ -90,14 +93,14 @@ private void CalTime() {
 
     private void AddMember(string name, int pRatio, int dRatio, int aRatio) {
         GameObject newMember = Instantiate(memberPrefab);
-        newMember.transform.parent = slotArea.transform;
+        newMember.transform.SetParent(slotArea.transform);
         newMember.GetComponent<Member>().Init(name, timeWeek, pRatio, dRatio, aRatio);
 
         if (crWorkerSlotRemainCnt > 0) {
             for (int i = 0; i < Game.gameManager.levelToSlots[1, Game.castle.level]; i++) {
                 Slot crSlot = Game.gameManager.workSlots[i].GetComponent<Slot>();
                 if (crSlot.isFill || crSlot.isLocked) continue;
-                crSlot.SetMember(newMember);
+                crSlot.PutMember(newMember);
                 break;
             }
         }
@@ -105,10 +108,65 @@ private void CalTime() {
             for (int i = 0; i < Game.gameManager.levelToSlots[2, Game.castle.level]; i++) {
                 Slot crSlot = Game.gameManager.restSlots[i].GetComponent<Slot>();
                 if (crSlot.isFill || crSlot.isLocked) continue;
-                crSlot.SetMember(newMember);
+                crSlot.PutMember(newMember);
                 break;
             }
         }
+    }
+
+    private void MemberClickAndDrop() {
+        if (!Input.GetMouseButtonDown(0) && !Input.GetMouseButtonUp(0)) return;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
+
+        Debug.Log(hit.collider);
+
+        if (Input.GetMouseButtonDown(0)) {
+            if (!hit.collider) return;
+
+            GameObject mouseDownObj = hit.collider.gameObject;
+            if (!mouseDownObj.TryGetComponent<Member>(out Member crMember)) return;
+
+            mouseDownMember = crMember;
+            mouseDownSlot = crMember.mySlot;
+            mouseDownSlot.RemoveMember();
+            mouseDownMember.SetDragging(true);
+
+            isDraging = true;
+        }
+        else if (Input.GetMouseButtonUp(0)) {
+            isDraging = false;
+
+            if (mouseDownMember == null) return;
+
+            GameObject mouseUpObj = null;
+            if (hit.collider) mouseUpObj = hit.collider.gameObject;
+
+            if (hit.collider == null || !mouseUpObj.TryGetComponent<Slot>(out Slot crSlot)
+                || crSlot.isFill || crSlot.isLocked) {
+                mouseDownSlot.PutMember(mouseDownMember.gameObject);
+            }
+            else {
+                crSlot.PutMember(mouseDownMember.gameObject);
+            }
+            mouseDownMember.SetDragging(false);
+            mouseDownMember = null;
+            mouseDownSlot = null;
+        }
+    }
+
+    private void MemberDrag() {
+        if (!isDraging) return;
+        Vector3 mousePositionScreen = Input.mousePosition;
+
+        Camera mainCamera = Camera.main;
+        Vector3 mousePositionWorld 
+            = mainCamera.ScreenToWorldPoint(new Vector3(mousePositionScreen.x, 
+            mousePositionScreen.y, 0));
+
+        mousePositionWorld.z = 0;
+        mouseDownMember.transform.position = mousePositionWorld;
     }
 
     private void Awake() {
@@ -121,7 +179,11 @@ private void CalTime() {
         crResterSlotRemainCnt = Game.gameManager.levelToSlots[2, Game.castle.level];
     }
 
+
+
     void Update() {
         CalTime();
+        MemberClickAndDrop();
+        MemberDrag();
     }
 }

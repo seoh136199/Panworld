@@ -37,19 +37,26 @@ public class Slot : MonoBehaviour {
 
     Vector2 GetCombinedAnchoredPosition() {
         RectTransform rectTransform = GetComponent<RectTransform>();
-        Vector3 myAnchoredPosition = rectTransform.anchoredPosition;
-        Vector3 parentAnchoredPosition = (rectTransform.parent as RectTransform).anchoredPosition;
-        return myAnchoredPosition + parentAnchoredPosition;
+        Vector2 myAnchoredPosition = rectTransform.anchoredPosition;
+        Vector2 parentAnchoredPosition = (rectTransform.parent as RectTransform).anchoredPosition;
+        Vector2 ans = myAnchoredPosition + parentAnchoredPosition;
+        return ans;
     }
 
-    public void SetMember(GameObject target) {
+    public void PutMember(GameObject target) {
         isFill = true;
         myMember = target;
         target.GetComponent<RectTransform>().anchoredPosition = GetCombinedAnchoredPosition();
-        Debug.Log(GetCombinedAnchoredPosition()); //  
-        target.GetComponent<Member>().slotId = id;
-
+        target.GetComponent<Member>().mySlot = this;
+        //타겟 투명도 복구
         Game.gameManager.crWorkerSlotRemainCnt--;
+    }
+
+    public void RemoveMember() {
+        isFill = false;
+        myMember.GetComponent<Member>().mySlot = null;
+        myMember = null;
+        Game.gameManager.crWorkerSlotRemainCnt++;
     }
 
     void Update() {
