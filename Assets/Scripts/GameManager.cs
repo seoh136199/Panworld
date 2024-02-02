@@ -15,6 +15,10 @@ public class Game {
         probationary, regular, honorary
     }
 
+    public enum SlotType {
+        executive, work, rest
+    }
+
 }
 
 public class GameManager : MonoBehaviour {
@@ -29,8 +33,26 @@ public class GameManager : MonoBehaviour {
 
     [SerializeField] private double timeSec = 0;
     [SerializeField] private int timeWeek = 0;
+    [SerializeField] private GameObject memberPrefab;
 
-    private void CalTime() {
+    public Slot[] executiveSlots = new Slot[3];
+    public Slot[] workSlots = new Slot[20];
+    public Slot[] restSlots = new Slot[8];
+
+    [SerializeField] private GameObject slotArea;
+
+    public int crWorkerSlotRemainCnt = 0, crResterSlotRemainCnt = 0;
+
+    public int[,] levelToSlots = {
+        { 0, 0, 0, 3, 3, 3 },
+        { 0, 3, 6, 9, 14, 20 },
+        { 0, 2, 2, 4, 6, 8 }
+    };
+
+    [SerializeField] private string nameDebug; //
+    [SerializeField] private int pRatioDebug, dRatioDebug, aRatioDebug; //
+
+private void CalTime() {
         timeSec += Time.deltaTime;
         crSec = (int)timeSec;
 
@@ -61,12 +83,42 @@ public class GameManager : MonoBehaviour {
         Game.castle.ChangeImage(num);
     }
 
+    [ContextMenu("AddMemberDebug")]
+    private void AddMemberDebug() {
+        AddMember(nameDebug, pRatioDebug, dRatioDebug, aRatioDebug);
+    }
+
+    private void AddMember(string name, int pRatio, int dRatio, int aRatio) {
+        GameObject newMember = Instantiate(memberPrefab);
+        newMember.transform.parent = slotArea.transform;
+        newMember.GetComponent<Member>().Init(name, timeWeek, pRatio, dRatio, aRatio);
+
+        if (crWorkerSlotRemainCnt > 0) {
+            for (int i = 0; i < Game.gameManager.levelToSlots[1, Game.castle.level]; i++) {
+                Slot crSlot = Game.gameManager.workSlots[i].GetComponent<Slot>();
+                if (crSlot.isFill || crSlot.isLocked) continue;
+                crSlot.SetMember(newMember);
+                break;
+            }
+        }
+        else {
+            for (int i = 0; i < Game.gameManager.levelToSlots[2, Game.castle.level]; i++) {
+                Slot crSlot = Game.gameManager.restSlots[i].GetComponent<Slot>();
+                if (crSlot.isFill || crSlot.isLocked) continue;
+                crSlot.SetMember(newMember);
+                break;
+            }
+        }
+    }
+
     private void Awake() {
         Game.gameManager = this;    
     }
 
     void Start() {
-        
+        slotArea = GameObject.Find("SlotArea");
+        crWorkerSlotRemainCnt = Game.gameManager.levelToSlots[1, Game.castle.level];
+        crResterSlotRemainCnt = Game.gameManager.levelToSlots[2, Game.castle.level];
     }
 
     void Update() {

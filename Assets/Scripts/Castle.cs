@@ -11,7 +11,7 @@ struct ImagesInfo {
 
 public class Castle : MonoBehaviour {
 
-    [SerializeField] private int level;
+    public int level;
 
     private Image image0, image1;
     [SerializeField] private ImagesInfo[] imagesInfos;

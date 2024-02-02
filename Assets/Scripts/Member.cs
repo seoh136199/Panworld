@@ -6,15 +6,17 @@ using Random = UnityEngine.Random;
 public class Member : MonoBehaviour {
 
     [SerializeField] private string name;
-    [SerializeField] private int entryDate;
+    [SerializeField] private int entryWeek;
     [SerializeField] private int level, throughput;
     [SerializeField] private int pRatio, dRatio, aRatio;
-    [SerializeField] Game.Part part;
-    [SerializeField] Game.MemberType memberType;
+    [SerializeField] private Game.Part part;
+    [SerializeField] private Game.MemberType memberType;
 
-    private void Init(string name, int crDate, int pRatio, int dRatio, int aRatio) {
+    public int slotId = -1;
+
+    public void Init(string name, int crWeek, int pRatio, int dRatio, int aRatio) {
         this.name = name;
-        this.entryDate = crDate;
+        this.entryWeek = crWeek;
 
         this.pRatio = pRatio;
         this.dRatio = dRatio;
@@ -32,6 +34,7 @@ public class Member : MonoBehaviour {
 
         //파트에 따라 외모 변경
 
+        transform.localScale = new(1, 1, 1);
         memberType = Game.MemberType.probationary;
     }
 
