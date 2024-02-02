@@ -23,7 +23,7 @@ public class Slot : MonoBehaviour {
     }
 
     private void SetImage() {
-        if (id >= Game.gameManager.levelToSlots[(int)slotType, Game.castle.level]) {
+        if (id >= Game.levelToSlots[(int)slotType, Game.castle.level]) {
             isLocked = true;
             myImage.sprite = lockImage;
         }

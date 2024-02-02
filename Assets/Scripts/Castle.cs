@@ -27,6 +27,9 @@ public class Castle : MonoBehaviour {
         image1 = transform.GetChild(1).GetComponent<Image>();
     }
 
+    public void LevelUp() {
+
+    }
 
     public void ChangeImage(int num) {
         IEnumerator Fade() {
@@ -35,7 +38,7 @@ public class Castle : MonoBehaviour {
             image1.sprite = imagesInfos[level].images[num];
             image0.color = new(1, 1, 1, 1);
 
-            float t = 0, fadeSpeed = 4.2f;
+            float t = 0, fadeSpeed = 3f;
             while (t < 1) {
                 image1.color = new(1, 1, 1, t);
                 t += fadeSpeed * Time.deltaTime;

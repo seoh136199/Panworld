@@ -8,18 +8,22 @@ public class Member : MonoBehaviour {
 
     [SerializeField] private string name;
     [SerializeField] private int entryWeek;
-    [SerializeField] private int level, throughput;
+    public int level, throughput, bonusThroughput, maxWorkTime;
+    public Game.Part part;
     [SerializeField] private int pRatio, dRatio, aRatio;
-    [SerializeField] private Game.Part part;
     [SerializeField] private Game.MemberType memberType;
     [SerializeField] private Sprite[] face = new Sprite[3];
+    public Slot mySlot;
+    public int workingTime = 0, restingTime = 0;
+    public bool isExhausted = false;
+
     private Image myImage;
     private BoxCollider2D myCollider;
 
-    public Slot mySlot;
 
-    public void Init(string name, int crWeek, int pRatio, int dRatio, int aRatio) {
+    public void Init(string name, int level, int crWeek, int pRatio, int dRatio, int aRatio) {
         this.name = name;
+        this.level = level;
         this.entryWeek = crWeek;
 
         this.pRatio = pRatio;
@@ -38,6 +42,7 @@ public class Member : MonoBehaviour {
 
         //myImage.sprite = face[(int)part];
         transform.localScale = new(1, 1, 1);
+        transform.transform.position = new(transform.transform.position.x, transform.transform.position.y, -0.001f);
         memberType = Game.MemberType.probationary;
     }
 
@@ -56,7 +61,7 @@ public class Member : MonoBehaviour {
         }
     }
 
-    public Game.Part GetCube() {
+    public Game.Part GetGoods() {
         if (Random.Range(0, 100) < pRatio) {
             return Game.Part.programming;
         }
@@ -71,6 +76,9 @@ public class Member : MonoBehaviour {
     void Start() {
         myImage = GetComponent<Image>();
         myCollider = GetComponent<BoxCollider2D>();
+        throughput = Game.levelToThroughput[(int)memberType, level];
+        bonusThroughput = Game.levelToBonusThroughput[(int)memberType, level];
+        maxWorkTime = Game.levelToWorktime[(int)memberType, level];
     }
 
     void Update() {
