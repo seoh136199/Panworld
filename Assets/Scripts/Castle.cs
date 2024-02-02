@@ -2,16 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
-public class BgImage : MonoBehaviour {
+[Serializable]
+struct ImagesInfo {
+    public Sprite[] images;
+}
+
+public class Castle : MonoBehaviour {
+
+    [SerializeField] private int level;
 
     private Image image0, image1;
-    [SerializeField] private Sprite[] imagesInfo;
+    [SerializeField] private ImagesInfo[] imagesInfos;
 
     [SerializeField] private bool isFading;
 
     private void Awake() {
-        Game.bgImage = this;
+        Game.castle = this;
     }
 
     void Start() {
@@ -20,14 +28,14 @@ public class BgImage : MonoBehaviour {
     }
 
     void Update() {
-        
+
     }
 
     public void ChangeImage(int num) {
         IEnumerator Fade() {
             isFading = true;
-            image0.sprite = imagesInfo[(num + 3) % 4];
-            image1.sprite = imagesInfo[num];
+            image0.sprite = imagesInfos[level].images[(num + 3) % 4];
+            image1.sprite = imagesInfos[level].images[num];
             image0.color = new(1, 1, 1, 1);
 
             float t = 0, fadeSpeed = 4.2f;
