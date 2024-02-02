@@ -46,11 +46,15 @@ public class GameManager : MonoBehaviour {
 
     public int crWorkerSlotRemainCnt = 0, crResterSlotRemainCnt = 0;
 
+    [SerializeField] private int blood = 0, sweat = 0, tear = 0;
+
     public int[,] levelToSlots = {
         { 0, 0, 0, 3, 3, 3 },
         { 0, 3, 6, 9, 14, 20 },
         { 0, 2, 2, 4, 6, 8 }
     };
+
+    public int[] levelToInterval = { 0, 10, 8, 6, 4, 2 };
 
     [SerializeField] private string nameDebug; //
     [SerializeField] private int pRatioDebug, dRatioDebug, aRatioDebug; //
@@ -167,6 +171,17 @@ private void CalTime() {
 
         mousePositionWorld.z = 0;
         mouseDownMember.transform.position = mousePositionWorld;
+    }
+
+    private void ProduceGoods() {
+        for (int i = 0; i < Game.gameManager.levelToSlots[1, Game.castle.level]; i++) {
+            Slot crSlot = Game.gameManager.workSlots[i].GetComponent<Slot>();
+            Member crMember = crSlot.myMember;
+
+            if (crMember == null) continue;
+
+            
+        }
     }
 
     private void Awake() {

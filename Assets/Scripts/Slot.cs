@@ -10,7 +10,7 @@ public class Slot : MonoBehaviour {
     [SerializeField] private Game.SlotType slotType;
     [SerializeField] private Sprite emptyImage, lockImage, fillImage;
     [SerializeField] private Image myImage;
-    [SerializeField] private GameObject myMember;
+    public Member myMember;
 
     void Start() {
         if (slotType == Game.SlotType.executive) Game.gameManager.executiveSlots[id] = this;
@@ -45,18 +45,19 @@ public class Slot : MonoBehaviour {
 
     public void PutMember(GameObject target) {
         isFill = true;
-        myMember = target;
-        target.GetComponent<RectTransform>().anchoredPosition = GetCombinedAnchoredPosition();
-        target.GetComponent<Member>().mySlot = this;
-        //타겟 투명도 복구
-        Game.gameManager.crWorkerSlotRemainCnt--;
+        myMember = target.GetComponent<Member>();
+        myMember.mySlot = this;
+        myMember.GetComponent<RectTransform>().anchoredPosition = GetCombinedAnchoredPosition();
+        if (slotType == Game.SlotType.work) Game.gameManager.crWorkerSlotRemainCnt--;
+        else if (slotType == Game.SlotType.rest) Game.gameManager.crResterSlotRemainCnt--;
     }
 
     public void RemoveMember() {
         isFill = false;
         myMember.GetComponent<Member>().mySlot = null;
         myMember = null;
-        Game.gameManager.crWorkerSlotRemainCnt++;
+        if (slotType == Game.SlotType.work) Game.gameManager.crWorkerSlotRemainCnt++;
+        else if (slotType == Game.SlotType.rest) Game.gameManager.crResterSlotRemainCnt++;
     }
 
     void Update() {
