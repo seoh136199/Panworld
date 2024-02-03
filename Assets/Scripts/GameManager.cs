@@ -6,12 +6,13 @@ public class Game {
 
     public static int YEAR_TO_WEEK = 12;
     public static int WEEK_TO_SEC = 40;
-    public static int[] BOUNDARY = { 0, 30 };
+    public static int[] BOUNDARY = { 0, 20 };
 
     public static GameManager gameManager;
     public static BgImage bgImage;
     public static Castle castle;
     public static BtnActions btnActions;
+    public static Gauge gauge;
 
     public enum Part { programming, design, art }
     public enum MemberType { probationary, regular, honorary }
@@ -23,9 +24,9 @@ public class Game {
         { 0, 2, 2, 4, 6, 8 }
     };
 
-    public static int[,] levelToThroughput = { { 0, 5, 10, 15 }, { 0, 10, 15, 20 } };
-    public static int[,] levelToBonusThroughput = { { 0, 3, 6, 8 }, { 0, 6, 9, 12 } };
-    public static int exePluesThroughput = 15, exePluesBonusThroughput = 9;
+    public static int[,] levelToThroughput = { { 0, 5, 8, 11 }, { 0, 7, 10, 13 } };
+    public static int[,] levelToBonusThroughput = { { 0, 1, 2, 3 }, { 0, 2, 3, 4 } };
+    public static int exePluesThroughput = 3, exePluesBonusThroughput = 1;
 
     public static int[,] levelToWorktime = { { 0, 2, 4, 6 }, { 0, 4, 6, 8 } };
     public static int exePluesWorktime = 4;
@@ -51,10 +52,10 @@ public class GameManager : MonoBehaviour {
     public Slot[] workSlots = new Slot[20];
     public Slot[] restSlots = new Slot[8];
 
-    [SerializeField] private GameObject slotArea;
-    [SerializeField] private Member mouseDownMember;
+    [SerializeField] private GameObject slotArea, detailArea;
+    [SerializeField] private Member mouseDownMember, detailMember;
     [SerializeField] private Slot mouseDownSlot;
-    [SerializeField] private bool isDraging = false;
+    [SerializeField] private bool isDraging = false, isDetailAreaOn = false;
 
     public int crWorkerSlotRemainCnt = 0, crResterSlotRemainCnt = 0;
 
@@ -203,6 +204,7 @@ public class GameManager : MonoBehaviour {
             mouseDownMember.SetDragging(true);
 
             isDraging = true;
+            SetDetailAreaOff();
 
             if (mouseDownMember.memberType == Game.MemberType.probationary) {
                 for (int i = 0; i < Game.levelToSlots[0, Game.castle.level]; i++) {
@@ -263,6 +265,21 @@ public class GameManager : MonoBehaviour {
         mouseDownMember.transform.position = mousePositionWorld;
     }
 
+    private void SetDetailArea() {
+        if (!Input.GetMouseButtonDown(1)) return;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
+
+        GameObject mouseDownObj = hit.collider.gameObject;
+        if (!hit.collider) return;
+        if (!mouseDownObj.TryGetComponent<Member>(out Member crMember)) return;
+
+        if (!isDetailAreaOn) SetDetailAreaOn(crMember);
+        else if (detailMember != crMember) SetDetailAreaOn(crMember);
+        else SetDetailAreaOff();
+    }
+
     private void ProduceGoods() {
         int[] deltaGoods = new int[3] { 0, 0, 0 };
 
@@ -298,12 +315,26 @@ public class GameManager : MonoBehaviour {
         Debug.Log(debug);
     }
 
+    public void SetDetailAreaOn(Member crMember) {
+        detailMember = crMember;
+        isDetailAreaOn = true;
+        detailArea.SetActive(true);
+        //crMember로 이것저것 설정
+    }
+
+    public void SetDetailAreaOff() {
+        isDetailAreaOn = false;
+        detailArea.SetActive(false);
+    }
+
     private void Awake() {
         Game.gameManager = this;    
     }
 
     void Start() {
         slotArea = GameObject.Find("SlotArea");
+        detailArea = GameObject.Find("DetailArea");
+        SetDetailAreaOff();
         crWorkerSlotRemainCnt = Game.levelToSlots[1, Game.castle.level];
         crResterSlotRemainCnt = Game.levelToSlots[2, Game.castle.level];
     }
@@ -311,6 +342,7 @@ public class GameManager : MonoBehaviour {
     void Update() {
         MemberClickAndDrop();
         MemberDrag();
-        CalTime(); 
+        CalTime();
+        SetDetailArea();
     }
 }
