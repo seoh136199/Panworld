@@ -15,9 +15,9 @@ public class SummonBtn : MonoBehaviour {
     public void Summon() {
         Debug.Log("소환 버튼 누름");
 
-        int pCnt = Game.gauge.inputGoodsCnt[0] * Game.gauge.inputUnit + Random.Range(-10, 20 + 1);
-        int dCnt = Game.gauge.inputGoodsCnt[1] * Game.gauge.inputUnit + Random.Range(-10, 20 + 1);
-        int aCnt = Game.gauge.inputGoodsCnt[2] * Game.gauge.inputUnit + Random.Range(-10, 20 + 1);
+        int pCnt = Game.gauge.inputGoodsCnt[0] * Game.gauge.inputUnit + Random.Range(-30, 40 + 1);
+        int dCnt = Game.gauge.inputGoodsCnt[1] * Game.gauge.inputUnit + Random.Range(-30, 40 + 1);
+        int aCnt = Game.gauge.inputGoodsCnt[2] * Game.gauge.inputUnit + Random.Range(-30, 40 + 1);
         pCnt = Mathf.Max(0, pCnt);
         dCnt = Mathf.Max(0, dCnt);
         aCnt = Mathf.Max(0, aCnt);

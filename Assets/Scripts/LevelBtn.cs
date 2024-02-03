@@ -34,7 +34,10 @@ public class LevelBtn : MonoBehaviour {
             if (Game.gauge.levelBtns[i] != this) Game.gauge.levelBtns[i].SetOff();
         }
 
-        //한 번 넣을 때 들어가는 재화 소모량 텍스트 변경
+        for (int i = 0; i < 3; i++) {
+            Game.gauge.goodsBtns[i].SetUnit(inputUnit);
+        }
+        Game.gauge.CheckGoodsBtnAvail();
     }
 
     public void SetOff() {

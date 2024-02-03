@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Game {
 
@@ -56,10 +57,12 @@ public class GameManager : MonoBehaviour {
     [SerializeField] private Member mouseDownMember, detailMember;
     [SerializeField] private Slot mouseDownSlot;
     [SerializeField] private bool isDraging = false, isDetailAreaOn = false;
+    private TextMeshProUGUI[] goodsTexts = new TextMeshProUGUI[3];
+    private TextMeshProUGUI dateText;
 
     public int crWorkerSlotRemainCnt = 0, crResterSlotRemainCnt = 0;
 
-    [SerializeField] private int[] goods = new int[3] {0, 0, 0};
+    public int[] goods = new int[3] {0, 0, 0};
 
     [SerializeField] private string nameDebug; //
     [SerializeField] private int levelDebug, pRatioDebug, dRatioDebug, aRatioDebug; //
@@ -147,6 +150,7 @@ public class GameManager : MonoBehaviour {
         foreach (var member in members){
             member.GetComponent<Member>().PromotionCheck(timeWeek);
         }
+        SetDateText();
     }
 
     private void EveryYearEvent() {
@@ -313,6 +317,17 @@ public class GameManager : MonoBehaviour {
         }
         debug += "추가됨";
         Debug.Log(debug);
+
+        Game.gauge.CheckGoodsBtnAvail();
+        SetGoodsText();
+    }
+
+    public void SetGoodsText() {
+        for (int i = 0; i < 3; i++) goodsTexts[i].text = goods[i] + "";
+    }
+
+    public void SetDateText() {
+        dateText.text = (crYear + 1) + "년 " + (crWeek + 1) + "주차";
     }
 
     public void SetDetailAreaOn(Member crMember) {
@@ -337,6 +352,15 @@ public class GameManager : MonoBehaviour {
         SetDetailAreaOff();
         crWorkerSlotRemainCnt = Game.levelToSlots[1, Game.castle.level];
         crResterSlotRemainCnt = Game.levelToSlots[2, Game.castle.level];
+
+        GameObject mainInfo = GameObject.Find("MainInfo");
+        for (int i = 0; i < 3; i++) {
+            goodsTexts[i] = mainInfo.transform.GetChild(i + 1).GetComponent<TextMeshProUGUI>();
+        }
+
+        dateText = mainInfo.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+
+        SetGoodsText();
     }
 
     void Update() {

@@ -34,7 +34,7 @@ public class Result : MonoBehaviour {
         gameObject.SetActive(false);
 
         for (int i = 0; i < 3; i++) {
-            Game.gauge.goodsBtns[i].SetActive();
+            Game.gauge.goodsBtns[i].SetActiveBySummon();
         }
     }
 

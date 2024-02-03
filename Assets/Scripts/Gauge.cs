@@ -43,8 +43,10 @@ public class Gauge : MonoBehaviour {
         summonBtn = GameObject.Find("SummonBtn");
     }
 
-    void Update() {
-        
+    public void CheckGoodsBtnAvail() {
+        for (int i = 0; i < 3; i++) {
+            goodsBtns[i].CheckUnitAvail();
+        }
     }
 
 
@@ -67,12 +69,13 @@ public class Gauge : MonoBehaviour {
         inputGoodsCnt[(int)type] += 1;
         goodsStandings[(int)type].color = new(1, 1, 1, 1);
         SetBars();
+        CheckGoodsBtnAvail();
 
         if (crInputCnt == maxGoodsCnt) {
             summonBtn.GetComponent<Image>().enabled = true;
             summonBtn.GetComponent<Button>().enabled = true;
             for (int i = 0; i < 3; i++) {
-                goodsBtns[i].Deactive();
+                goodsBtns[i].DeactiveBySummon();
             }
         }
     }
