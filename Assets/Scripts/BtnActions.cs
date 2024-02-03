@@ -15,6 +15,7 @@ public class BtnActions : MonoBehaviour {
     private void Start() {
         workPopupTransform = GameObject.Find("WorkPopup").GetComponent<RectTransform>();
         alterPopup = GameObject.Find("AlterPopup");
+        alterPopup.SetActive(false);
     }
 
 

@@ -160,13 +160,13 @@ public class GameManager : MonoBehaviour {
 
     [ContextMenu("AddMemberDebug")]
     private void AddMemberDebug() {
-        AddMember(nameDebug, levelDebug, pRatioDebug, dRatioDebug, aRatioDebug);
+        AddMember(nameDebug, levelDebug, pRatioDebug, dRatioDebug, aRatioDebug, pRatioDebug, dRatioDebug, aRatioDebug);
     }
 
-    private void AddMember(string name, int level, int pRatio, int dRatio, int aRatio) {
+    public void AddMember(string name, int level, int pRatio, int dRatio, int aRatio, int pVisual, int dVisual, int aVisual) {
         GameObject newMember = Instantiate(memberPrefab);
         newMember.transform.SetParent(slotArea.transform);
-        newMember.GetComponent<Member>().Init(name, level, timeWeek, pRatio, dRatio, aRatio);
+        newMember.GetComponent<Member>().Init(name, level, timeWeek, pRatio, dRatio, aRatio, pVisual, dVisual, aVisual);
 
         if (crWorkerSlotRemainCnt > 0) {
             for (int i = 0; i < Game.levelToSlots[1, Game.castle.level]; i++) {

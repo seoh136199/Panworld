@@ -26,7 +26,7 @@ public class BgImage : MonoBehaviour {
             image1.sprite = imagesInfo[num];
             image0.color = new(1, 1, 1, 1);
 
-            float t = 0, fadeSpeed = 3f;
+            float t = 0, fadeSpeed = 2.5f;
             while (t < 1) {
                 image1.color = new(1, 1, 1, t);
                 t += fadeSpeed * Time.deltaTime;

@@ -5,11 +5,12 @@ using UnityEngine.UI;
 
 public class Gauge : MonoBehaviour {
 
-    public int maxGoodsCnt = 10, inputUnit = 10, crInputCnt = 0;
+    public int maxGoodsCnt = 10, inputUnit = 10, crInputCnt = 0, crLevel;
     public int[] inputGoodsCnt = new int[3] { 0, 0, 0 };
     public GaugeBar bar1, bar2, bar3;
     public LevelBtn[] levelBtns = new LevelBtn[3];
-    public Image[] goodsStanding = new Image[3];
+    public Image[] goodsStandings = new Image[3];
+    public GoodsBtn[] goodsBtns = new GoodsBtn[3];
     public GameObject summonBtn;
 
     public int debugType = 0;
@@ -29,9 +30,14 @@ public class Gauge : MonoBehaviour {
             levelBtns[i] = uiBtns.transform.GetChild(i + 1).GetComponent<LevelBtn>();
         }
 
-        GameObject goodsStandings = GameObject.Find("GoodsStandings");
+        GameObject goodsStandingsObj = GameObject.Find("GoodsStandings");
         for (int i = 0; i < 3; i++) {
-            goodsStanding[i] = goodsStandings.transform.GetChild(i).GetComponent<Image>();
+            goodsStandings[i] = goodsStandingsObj.transform.GetChild(i).GetComponent<Image>();
+        }
+
+        GameObject goodsBtnsObj = GameObject.Find("GoodsBtns");
+        for (int i = 0; i < 3; i++) {
+            goodsBtns[i] = goodsBtnsObj.transform.GetChild(i).GetComponent<GoodsBtn>();
         }
 
         summonBtn = GameObject.Find("SummonBtn");
@@ -47,6 +53,7 @@ public class Gauge : MonoBehaviour {
         InputGoods((Game.Part)debugType);
     }
 
+
     public void InputGoods(Game.Part type) {
         if (crInputCnt >= maxGoodsCnt) return;
 
@@ -58,12 +65,15 @@ public class Gauge : MonoBehaviour {
 
         crInputCnt++;
         inputGoodsCnt[(int)type] += 1;
-        goodsStanding[(int)type].color = new(1, 1, 1, 1);
+        goodsStandings[(int)type].color = new(1, 1, 1, 1);
         SetBars();
 
         if (crInputCnt == maxGoodsCnt) {
             summonBtn.GetComponent<Image>().enabled = true;
             summonBtn.GetComponent<Button>().enabled = true;
+            for (int i = 0; i < 3; i++) {
+                goodsBtns[i].Deactive();
+            }
         }
     }
 

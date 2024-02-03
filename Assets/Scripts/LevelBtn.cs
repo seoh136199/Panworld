@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class LevelBtn : MonoBehaviour {
 
+    public int level;
     public bool thisLevelOn = false, isActive = true;
     [SerializeField] private int maxGoodsCnt = 10, inputUnit = 10;
     private Image bgImage, gaugeLineImage, myImage;
@@ -21,6 +22,7 @@ public class LevelBtn : MonoBehaviour {
         if (!isActive) return;
 
         thisLevelOn = true;
+        Game.gauge.crLevel = level;
         Game.gauge.maxGoodsCnt = maxGoodsCnt;
         Game.gauge.inputUnit = inputUnit;
 

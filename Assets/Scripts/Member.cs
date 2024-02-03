@@ -12,6 +12,7 @@ public class Member : MonoBehaviour {
     public Game.Part part;
     public Game.MemberType memberType;
     [SerializeField] private int pRatio, dRatio, aRatio;
+    [SerializeField] private int pVisual, dVisual, aVisual;
     [SerializeField] private Sprite[] face = new Sprite[3];
     [SerializeField] private Sprite sadMask, happyMask;
     public Slot mySlot;
@@ -22,7 +23,8 @@ public class Member : MonoBehaviour {
     private Image myFace, myBg, myMask;
     private BoxCollider2D myCollider;
 
-    public void Init(string name, int level, int timeWeek, int pRatio, int dRatio, int aRatio) {
+    public void Init(string name, int level, int timeWeek, 
+        int pRatio, int dRatio, int aRatio, int pVisual, int dVisual, int aVisual) {
         myBg = transform.GetChild(0).GetComponent<Image>();
         myFace = transform.GetChild(1).GetComponent<Image>();
         myMask = transform.GetChild(2).GetComponent<Image>();
@@ -39,6 +41,9 @@ public class Member : MonoBehaviour {
         this.pRatio = pRatio;
         this.dRatio = dRatio;
         this.aRatio = aRatio;
+        this.pVisual = pVisual;
+        this.dVisual = dVisual;
+        this.aVisual = aVisual;
 
         if (Random.Range(0, 100) < pRatio) {
             part = Game.Part.programming;
@@ -121,8 +126,8 @@ public class Member : MonoBehaviour {
         if (isWorking) { crTime = workingTime; maxTime = maxWorkTime; }
         else { crTime = restingTime; maxTime = 10; }
 
-        float crRatio = (float)crTime / maxTime;
-        float nextRatio = (float)(crTime + 1) / maxTime;
+        float crRatio = Mathf.Min((float)crTime / (maxTime - 1), 1f);
+        float nextRatio = Mathf.Min((float)(crTime + 1) / (maxTime - 1), 1f);
 
         RectTransform targetTransform = myBg.GetComponent<RectTransform>();
         if (isWorking) myBg.GetComponent<Image>().color = new(255f / 255, 84f / 255, 84f / 255);
@@ -155,7 +160,7 @@ public class Member : MonoBehaviour {
             isExhausted = true;
         }
 
-        float crRatio = (float)crTime / maxTime;
+        float crRatio = Mathf.Min((float)crTime / (maxTime - 1), 1f);
 
         if (isWorking) myBg.GetComponent<Image>().color = new(255f / 255, 84f / 255, 84f / 255);
         else myBg.GetComponent<Image>().color = new(100f / 255, 255f / 255, 81f / 255);

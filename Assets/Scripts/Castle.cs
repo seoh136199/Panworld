@@ -34,11 +34,11 @@ public class Castle : MonoBehaviour {
     public void ChangeImage(int num) {
         IEnumerator Fade() {
             isFading = true;
-            image0.sprite = imagesInfos[level].images[(num + 1) % 2];
-            image1.sprite = imagesInfos[level].images[num];
+            image0.sprite = imagesInfos[level - 1].images[(num + 1) % 2];
+            image1.sprite = imagesInfos[level - 1].images[num];
             image0.color = new(1, 1, 1, 1);
 
-            float t = 0, fadeSpeed = 3f;
+            float t = 0, fadeSpeed = 2.5f;
             while (t < 1) {
                 image1.color = new(1, 1, 1, t);
                 t += fadeSpeed * Time.deltaTime;
