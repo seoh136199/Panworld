@@ -10,19 +10,22 @@ public class Member : MonoBehaviour {
     [SerializeField] private int entryWeek;
     public int level, throughput, bonusThroughput, maxWorkTime;
     public Game.Part part;
+    public Game.MemberType memberType;
     [SerializeField] private int pRatio, dRatio, aRatio;
-    [SerializeField] private Game.MemberType memberType;
     [SerializeField] private Sprite[] face = new Sprite[3];
+    [SerializeField] private Sprite sadMask, happyMask;
     public Slot mySlot;
     public int workingTime = 0, restingTime = 0;
     public bool isExhausted = false, isRecovered = false;
+    [SerializeField] private float maskWeight = 0;
 
-    private Image myFace, myBg;
+    private Image myFace, myBg, myMask;
     private BoxCollider2D myCollider;
 
     public void Init(string name, int level, int timeWeek, int pRatio, int dRatio, int aRatio) {
-        myFace = transform.GetChild(1).GetComponent<Image>();
         myBg = transform.GetChild(0).GetComponent<Image>();
+        myFace = transform.GetChild(1).GetComponent<Image>();
+        myMask = transform.GetChild(2).GetComponent<Image>();
         myCollider = GetComponent<BoxCollider2D>();
 
         throughput = Game.levelToThroughput[(int)memberType, level];
@@ -91,11 +94,13 @@ public class Member : MonoBehaviour {
             myCollider.enabled = false;
             myFace.color = new(myFace.color.r, myFace.color.g, myFace.color.b, 0.5f);
             myBg.color = new(myBg.color.r, myBg.color.g, myBg.color.b, 0f);
+            myMask.color = new(1, 1, 1, 0f);
         }
         else {
             myCollider.enabled = true;
             myFace.color = new(myFace.color.r, myFace.color.g, myFace.color.b, 1);
             myBg.color = new(myBg.color.r, myBg.color.g, myBg.color.b, 1f);
+            myMask.color = new(1, 1, 1, 1f);
         }
     }
 
@@ -163,7 +168,44 @@ public class Member : MonoBehaviour {
 
     }
 
+    IEnumerator SetMaskWeight() {
+        float t = 0, fadeSpeed = 5f;
+        while (t < 1) {
+            maskWeight = t;
+            t += fadeSpeed * Time.deltaTime;
+            yield return null;
+        }
+        maskWeight = 1;
+    }
+
+    public void SetExhausted() {
+        isExhausted = true;
+        isRecovered = false;
+        myMask.sprite = sadMask;
+        StartCoroutine(SetMaskWeight());
+    }
+
+    public void SetRecovered() {
+        isRecovered = true;
+        isExhausted = false;
+        myMask.sprite = happyMask;
+        StartCoroutine(SetMaskWeight());
+    }
+
+    private void SetMask() {
+        bool maskOn = isExhausted && mySlot && mySlot.slotType != Game.SlotType.rest;
+        maskOn |= isRecovered && mySlot && mySlot.slotType == Game.SlotType.rest;
+
+        if (maskOn) {
+            float t = (float)Game.gameManager.timeSecDouble * 1.5f;
+            myMask.color = new(1, 1, 1, (Mathf.Sin(t) * Mathf.Sin(t) * 0.7f + 0.1f) * maskWeight);
+        }
+        else {
+            myMask.color = new(1, 1, 1, 0);
+        }
+    }
+
     void Update() {
-        
+        SetMask();
     }
 }

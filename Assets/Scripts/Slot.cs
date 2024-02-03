@@ -6,9 +6,9 @@ using UnityEngine.UI;
 public class Slot : MonoBehaviour {
 
     [SerializeField] private int id;
-    public bool isFill = false, isLocked = false;
+    public bool isFill = false, isLocked = false, isLimited = false;
     public Game.SlotType slotType;
-    [SerializeField] private Sprite emptyImage, lockImage, fillImage;
+    [SerializeField] private Sprite emptyImage, lockImage, fillImage, limitImage;
     [SerializeField] private Image myImage;
     public Member myMember;
 
@@ -58,6 +58,14 @@ public class Slot : MonoBehaviour {
         myMember = null;
         if (slotType == Game.SlotType.work) Game.gameManager.crWorkerSlotRemainCnt++;
         else if (slotType == Game.SlotType.rest) Game.gameManager.crResterSlotRemainCnt++;
+    }
+
+    public void SetLimited(bool isLimited) {
+        if (isFill) return;
+
+        this.isLimited = isLimited;
+        if (!isLocked && isLimited) myImage.sprite = limitImage;
+        else SetImage();
     }
 
     void Update() {

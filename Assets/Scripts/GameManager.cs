@@ -40,8 +40,9 @@ public class GameManager : MonoBehaviour {
     [SerializeField] private int preSec = 0;
     [SerializeField] private int crSec = 0;
     [SerializeField] private int crSecAfterLevelup = 0;
+    [SerializeField] private double crSecDouble = 0;
 
-    [SerializeField] private double timeSec = 0;
+    public double timeSecDouble = 0;
     [SerializeField] private int timeWeek = 0;
     [SerializeField] private GameObject memberPrefab;
 
@@ -62,15 +63,16 @@ public class GameManager : MonoBehaviour {
     [SerializeField] private int levelDebug, pRatioDebug, dRatioDebug, aRatioDebug; //
 
     private void CalTime() {
-        timeSec += Time.deltaTime;
-        crSec = (int)timeSec;
+        timeSecDouble += Time.deltaTime;
+        crSecDouble += Time.deltaTime;
+        crSec = (int)crSecDouble;
 
         if (crSec >= Game.WEEK_TO_SEC) {
             int deltaWeek = crSec / Game.WEEK_TO_SEC;
             crWeek += deltaWeek;
             timeWeek += deltaWeek;
             crSec -= deltaWeek * Game.WEEK_TO_SEC;
-            timeSec -= deltaWeek * Game.WEEK_TO_SEC;
+            crSecDouble -= deltaWeek * Game.WEEK_TO_SEC;
             EveryWeekEvent();
         }
         if (crWeek >= Game.YEAR_TO_WEEK) {
@@ -94,7 +96,7 @@ public class GameManager : MonoBehaviour {
             crMember.SetBgBarAnimation(true);
             crMember.workingTime++;
             if (crMember.workingTime >= crMember.maxWorkTime) {
-                crMember.isExhausted = true;
+                crMember.SetExhausted();
             }
         }
 
@@ -106,8 +108,7 @@ public class GameManager : MonoBehaviour {
             crMember.SetBgBarAnimation(false);
             crMember.restingTime++;
             if (crMember.restingTime >= 10) {
-                crMember.isExhausted = false;
-                crMember.isRecovered = true;
+                crMember.SetRecovered();
                 crMember.workingTime = 0;
             }
         }
@@ -189,7 +190,7 @@ public class GameManager : MonoBehaviour {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
 
-        if (Input.GetMouseButtonDown(0)) {
+        if (Input.GetMouseButtonDown(0)) { //Mouse Down
             if (!hit.collider) return;
 
             GameObject mouseDownObj = hit.collider.gameObject;
@@ -201,8 +202,15 @@ public class GameManager : MonoBehaviour {
             mouseDownMember.SetDragging(true);
 
             isDraging = true;
+
+            if (mouseDownMember.memberType == Game.MemberType.probationary) {
+                for (int i = 0; i < Game.levelToSlots[0, Game.castle.level]; i++) {
+                    Slot crSlot = Game.gameManager.executiveSlots[i].GetComponent<Slot>();
+                    crSlot.SetLimited(true);
+                }
+            }
         }
-        else if (Input.GetMouseButtonUp(0)) {
+        else if (Input.GetMouseButtonUp(0)) { //Mouse Up
             isDraging = false;
 
             if (mouseDownMember == null) return;
@@ -210,24 +218,32 @@ public class GameManager : MonoBehaviour {
             GameObject mouseUpObj = null;
             if (hit.collider) mouseUpObj = hit.collider.gameObject;
 
-            if (hit.collider == null || !mouseUpObj.TryGetComponent<Slot>(out Slot crSlot)
-                || crSlot.isFill || crSlot.isLocked) {
+            if (hit.collider == null || !mouseUpObj.TryGetComponent<Slot>(out Slot mouseUpSlot)
+                || mouseUpSlot.isFill || mouseUpSlot.isLocked || mouseUpSlot.isLimited) {
                 mouseDownSlot.PutMember(mouseDownMember.gameObject);
             }
             else {
-                if ((int)crSlot.slotType <= 1) mouseDownMember.restingTime = 0;
-                if ((int)crSlot.slotType <= 1) mouseDownMember.isRecovered = false;
+                if ((int)mouseUpSlot.slotType <= 1) mouseDownMember.restingTime = 0;
+                if ((int)mouseUpSlot.slotType <= 1) mouseDownMember.isRecovered = false;
 
-                if (crSlot.slotType == Game.SlotType.executive) mouseDownMember.BeExe();
+                if (mouseUpSlot.slotType == Game.SlotType.executive) mouseDownMember.BeExe();
                 else mouseDownMember.QuitExe();
 
-                if (mouseDownSlot.slotType != crSlot.slotType) {
-                    mouseDownMember.ResetBgBar((int)crSlot.slotType <= 1);
+                if (mouseDownSlot.slotType != mouseUpSlot.slotType) {
+                    mouseDownMember.ResetBgBar((int)mouseUpSlot.slotType <= 1);
                 }
 
-                crSlot.PutMember(mouseDownMember.gameObject);
+                mouseUpSlot.PutMember(mouseDownMember.gameObject);
             }
             mouseDownMember.SetDragging(false);
+
+            if (mouseDownMember.memberType == Game.MemberType.probationary) {
+                for (int i = 0; i < Game.levelToSlots[0, Game.castle.level]; i++) {
+                    Slot crSlot = Game.gameManager.executiveSlots[i].GetComponent<Slot>();
+                    crSlot.SetLimited(false);
+                }
+            }
+
             mouseDownMember = null;
             mouseDownSlot = null;
         }
@@ -257,10 +273,8 @@ public class GameManager : MonoBehaviour {
             Game.Part goodsType = crMember.GetGoods();
 
             deltaGoods[(int)goodsType] += crMember.throughput;
-            //if (isExe) deltaGoods[(int)goodsType] += Game.exePluesThroughput;
             if (crMember.part == goodsType) {
                 deltaGoods[(int)goodsType] += crMember.bonusThroughput;
-                //if (isExe) deltaGoods[(int)goodsType] += Game.exePluesBonusThroughput;
             }
         }
 
