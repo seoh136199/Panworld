@@ -89,22 +89,24 @@ public class GameManager : MonoBehaviour {
             if (crMember == null) return;
             if (crMember.isExhausted) return;
 
+            crMember.SetBgBarAnimation(true);
             crMember.workingTime++;
-            if (crMember.workingTime >= crMember.maxWorkTime * Game.WEEK_TO_SEC) {
+            if (crMember.workingTime >= crMember.maxWorkTime) {
                 crMember.isExhausted = true;
-                crMember.workingTime = 0;
             }
         }
 
         void CheckRestingTime(Slot crSlot) {
             Member crMember = crSlot.myMember;
             if (crMember == null) return;
-            if (!crMember.isExhausted) return;
+            if (crMember.isRecovered) return;
 
+            crMember.SetBgBarAnimation(false);
             crMember.restingTime++;
             if (crMember.restingTime >= 10) {
                 crMember.isExhausted = false;
-                crMember.restingTime = 0;
+                crMember.isRecovered = true;
+                crMember.workingTime = 0;
             }
         }
 
@@ -202,8 +204,15 @@ public class GameManager : MonoBehaviour {
                 mouseDownSlot.PutMember(mouseDownMember.gameObject);
             }
             else {
+                if (crSlot.slotType == Game.SlotType.work) mouseDownMember.restingTime = 0;
+                if (crSlot.slotType == Game.SlotType.work) mouseDownMember.isRecovered = false;
+
+                if ((int)mouseDownSlot.slotType + (int)crSlot.slotType >= 2 
+                    && mouseDownSlot.slotType != crSlot.slotType) {
+                    mouseDownMember.ResetBgBar(crSlot.slotType == Game.SlotType.work);
+                }
                 crSlot.PutMember(mouseDownMember.gameObject);
-                //휴식 덜 한 애를 옮긴 경우 휴식 시간 리셋
+                
                 //임원진이었던 부원을 임원진이 아닌 칸에 둔 경우 연속 노동 시간 체크해서 초과했으면 바로 탈진
             }
             mouseDownMember.SetDragging(false);

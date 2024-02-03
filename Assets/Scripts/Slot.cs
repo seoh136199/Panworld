@@ -7,7 +7,7 @@ public class Slot : MonoBehaviour {
 
     [SerializeField] private int id;
     public bool isFill = false, isLocked = false;
-    [SerializeField] private Game.SlotType slotType;
+    public Game.SlotType slotType;
     [SerializeField] private Sprite emptyImage, lockImage, fillImage;
     [SerializeField] private Image myImage;
     public Member myMember;

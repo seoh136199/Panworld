@@ -15,13 +15,19 @@ public class Member : MonoBehaviour {
     [SerializeField] private Sprite[] face = new Sprite[3];
     public Slot mySlot;
     public int workingTime = 0, restingTime = 0;
-    public bool isExhausted = false;
+    public bool isExhausted = false, isRecovered = false;
 
-    private Image myImage;
+    private Image myFace, myBg;
     private BoxCollider2D myCollider;
 
-
     public void Init(string name, int level, int crWeek, int pRatio, int dRatio, int aRatio) {
+        myFace = transform.GetChild(1).GetComponent<Image>();
+        myBg = transform.GetChild(0).GetComponent<Image>();
+        myCollider = GetComponent<BoxCollider2D>();
+        throughput = Game.levelToThroughput[(int)memberType, level];
+        bonusThroughput = Game.levelToBonusThroughput[(int)memberType, level];
+        maxWorkTime = Game.levelToWorktime[(int)memberType, level] * Game.WEEK_TO_SEC;
+
         this.name = name;
         this.level = level;
         this.entryWeek = crWeek;
@@ -40,7 +46,7 @@ public class Member : MonoBehaviour {
             part = Game.Part.art;
         }
 
-        //myImage.sprite = face[(int)part];
+        myFace.sprite = face[(int)part];
         transform.localScale = new(1, 1, 1);
         transform.transform.position = new(transform.transform.position.x, transform.transform.position.y, -0.001f);
         memberType = Game.MemberType.probationary;
@@ -53,11 +59,11 @@ public class Member : MonoBehaviour {
     public void SetDragging(bool isDragging) {
         if (isDragging) {
             myCollider.enabled = false;
-            myImage.color = new(myImage.color.r, myImage.color.g, myImage.color.b, 0.5f);
+            myFace.color = new(myFace.color.r, myFace.color.g, myFace.color.b, 0.5f);
         }
         else {
             myCollider.enabled = true;
-            myImage.color = new(myImage.color.r, myImage.color.g, myImage.color.b, 1);
+            myFace.color = new(myFace.color.r, myFace.color.g, myFace.color.b, 1);
         }
     }
 
@@ -73,12 +79,50 @@ public class Member : MonoBehaviour {
         }
     }
 
+    public void SetBgBarAnimation(bool isWorking) {
+        int crTime, maxTime;
+        if (isWorking) { crTime = workingTime; maxTime = maxWorkTime; }
+        else { crTime = restingTime; maxTime = 10; }
+
+        float crRatio = (float)crTime / maxTime;
+        float nextRatio = (float)(crTime + 1) / maxTime;
+
+        RectTransform targetTransform = myBg.GetComponent<RectTransform>();
+        if (isWorking) myBg.GetComponent<Image>().color = new(255f / 255, 84f / 255, 84f / 255);
+        else myBg.GetComponent<Image>().color = new(100f / 255, 255f / 255, 81f / 255);
+
+        IEnumerator Anim() {
+            float t = 0, fadeSpeed = 1f;
+            while (t < 1) {
+                targetTransform.localScale = new(1, Mathf.Lerp(crRatio, nextRatio, t), 1);
+                t += fadeSpeed * Time.deltaTime;
+                yield return null;
+            }
+            targetTransform.localScale = new(1,nextRatio, 1);
+        }
+
+        StartCoroutine(Anim());
+    }
+
+    public void ResetBgBar(bool isWorking) {
+        RectTransform targetTransform = myBg.GetComponent<RectTransform>();
+
+        int crTime, maxTime;
+        if (isWorking) { crTime = workingTime; maxTime = maxWorkTime; }
+        else { crTime = restingTime; maxTime = 10; }
+
+        float crRatio = (float)crTime / maxTime;
+        Debug.Log(crRatio);
+
+        if (isWorking) myBg.GetComponent<Image>().color = new(255f / 255, 84f / 255, 84f / 255);
+        else myBg.GetComponent<Image>().color = new(100f / 255, 255f / 255, 81f / 255);
+
+        targetTransform.localScale = new(1, crRatio, 1);
+    }
+
+
     void Start() {
-        myImage = GetComponent<Image>();
-        myCollider = GetComponent<BoxCollider2D>();
-        throughput = Game.levelToThroughput[(int)memberType, level];
-        bonusThroughput = Game.levelToBonusThroughput[(int)memberType, level];
-        maxWorkTime = Game.levelToWorktime[(int)memberType, level];
+
     }
 
     void Update() {
