@@ -20,17 +20,18 @@ public class Member : MonoBehaviour {
     private Image myFace, myBg;
     private BoxCollider2D myCollider;
 
-    public void Init(string name, int level, int crWeek, int pRatio, int dRatio, int aRatio) {
+    public void Init(string name, int level, int timeWeek, int pRatio, int dRatio, int aRatio) {
         myFace = transform.GetChild(1).GetComponent<Image>();
         myBg = transform.GetChild(0).GetComponent<Image>();
         myCollider = GetComponent<BoxCollider2D>();
+
         throughput = Game.levelToThroughput[(int)memberType, level];
         bonusThroughput = Game.levelToBonusThroughput[(int)memberType, level];
         maxWorkTime = Game.levelToWorktime[(int)memberType, level] * Game.WEEK_TO_SEC;
 
         this.name = name;
         this.level = level;
-        this.entryWeek = crWeek;
+        this.entryWeek = timeWeek;
 
         this.pRatio = pRatio;
         this.dRatio = dRatio;
@@ -50,6 +51,19 @@ public class Member : MonoBehaviour {
         transform.localScale = new(1, 1, 1);
         transform.transform.position = new(transform.transform.position.x, transform.transform.position.y, -0.001f);
         memberType = Game.MemberType.probationary;
+
+        ResetBgBar(false);
+    }
+
+    public void PromotionCheck(int crWeek) {
+        if (memberType != Game.MemberType.probationary) return;
+        if (crWeek - entryWeek < 12) return;
+
+        memberType = Game.MemberType.regular;
+
+        throughput = Game.levelToThroughput[(int)memberType, level];
+        bonusThroughput = Game.levelToBonusThroughput[(int)memberType, level];
+        maxWorkTime = Game.levelToWorktime[(int)memberType, level] * Game.WEEK_TO_SEC;
     }
 
     public void ChangeName(string newName) {
@@ -87,6 +101,8 @@ public class Member : MonoBehaviour {
         float crRatio = (float)crTime / maxTime;
         float nextRatio = (float)(crTime + 1) / maxTime;
 
+        Debug.Log(crTime + " " + maxTime);
+
         RectTransform targetTransform = myBg.GetComponent<RectTransform>();
         if (isWorking) myBg.GetComponent<Image>().color = new(255f / 255, 84f / 255, 84f / 255);
         else myBg.GetComponent<Image>().color = new(100f / 255, 255f / 255, 81f / 255);
@@ -98,7 +114,7 @@ public class Member : MonoBehaviour {
                 t += fadeSpeed * Time.deltaTime;
                 yield return null;
             }
-            targetTransform.localScale = new(1,nextRatio, 1);
+            targetTransform.localScale = new(1, nextRatio, 1);
         }
 
         StartCoroutine(Anim());
@@ -112,7 +128,6 @@ public class Member : MonoBehaviour {
         else { crTime = restingTime; maxTime = 10; }
 
         float crRatio = (float)crTime / maxTime;
-        Debug.Log(crRatio);
 
         if (isWorking) myBg.GetComponent<Image>().color = new(255f / 255, 84f / 255, 84f / 255);
         else myBg.GetComponent<Image>().color = new(100f / 255, 255f / 255, 81f / 255);

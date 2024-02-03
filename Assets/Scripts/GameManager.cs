@@ -71,11 +71,13 @@ public class GameManager : MonoBehaviour {
             timeWeek += deltaWeek;
             crSec -= deltaWeek * Game.WEEK_TO_SEC;
             timeSec -= deltaWeek * Game.WEEK_TO_SEC;
+            EveryWeekEvent();
         }
         if (crWeek >= Game.YEAR_TO_WEEK) {
             int deltaYear = crWeek / Game.YEAR_TO_WEEK;
             crYear += deltaYear;
             crWeek -= deltaYear * Game.YEAR_TO_WEEK;
+            EveryYearEvent();
         }
 
         if (preSec == crSec) return;
@@ -137,6 +139,17 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    private void EveryWeekEvent() {
+        var members = GameObject.FindGameObjectsWithTag("Member");
+        foreach (var member in members){
+            member.GetComponent<Member>().PromotionCheck(timeWeek);
+        }
+    }
+
+    private void EveryYearEvent() {
+        Debug.Log("EveryYearEvent()");
+    }
+
     private void TimeBoundaryEvent(int num) {
         Game.bgImage.ChangeImage(num);
         Game.castle.ChangeImage(num);
@@ -176,8 +189,6 @@ public class GameManager : MonoBehaviour {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
 
-        Debug.Log(hit.collider);
-
         if (Input.GetMouseButtonDown(0)) {
             if (!hit.collider) return;
 
@@ -212,8 +223,6 @@ public class GameManager : MonoBehaviour {
                     mouseDownMember.ResetBgBar(crSlot.slotType == Game.SlotType.work);
                 }
                 crSlot.PutMember(mouseDownMember.gameObject);
-                
-                //임원진이었던 부원을 임원진이 아닌 칸에 둔 경우 연속 노동 시간 체크해서 초과했으면 바로 탈진
             }
             mouseDownMember.SetDragging(false);
             mouseDownMember = null;

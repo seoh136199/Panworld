@@ -166,7 +166,7 @@ GameObject:
   - component: {fileID: 7209164552148401290}
   m_Layer: 0
   m_Name: Member
-  m_TagString: Untagged
+  m_TagString: Member
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -224,6 +224,7 @@ MonoBehaviour:
   workingTime: 0
   restingTime: 0
   isExhausted: 0
+  isRecovered: 0
 --- !u!222 &5516609667182793401
 CanvasRenderer:
   m_ObjectHideFlags: 0
