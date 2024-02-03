@@ -34,6 +34,8 @@ public class Game {
 
     public static int[] levelToInterval = { 0, 10, 8, 6, 4, 2 };
 
+    public static int[] upgradeCost = { 80, 300, 1000, 3800, 10000 };
+
 }
 
 public class GameManager : MonoBehaviour {
@@ -41,7 +43,7 @@ public class GameManager : MonoBehaviour {
     [SerializeField] private int crYear = 0;
     [SerializeField] private int crWeek = 0;
     [SerializeField] private int preSec = 0;
-    [SerializeField] private int crSec = 0;
+    public int crSec = 0;
     [SerializeField] private int crSecAfterLevelup = 0;
     [SerializeField] private double crSecDouble = 0;
 
@@ -222,6 +224,8 @@ public class GameManager : MonoBehaviour {
 
             if (mouseDownMember == null) return;
 
+            mouseDownMember.transform.parent = slotArea.transform;
+
             GameObject mouseUpObj = null;
             if (hit.collider) mouseUpObj = hit.collider.gameObject;
 
@@ -258,6 +262,8 @@ public class GameManager : MonoBehaviour {
 
     private void MemberDrag() {
         if (!isDraging) return;
+
+        mouseDownMember.transform.parent = slotArea.transform.parent;
         Vector3 mousePositionScreen = Input.mousePosition;
 
         Camera mainCamera = Camera.main;

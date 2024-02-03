@@ -28,7 +28,13 @@ public class Castle : MonoBehaviour {
     }
 
     public void LevelUp() {
+        level++;
+        image0.sprite = imagesInfos[level - 1].images[Game.gameManager.crSec / 20];
+        image1.sprite = imagesInfos[level - 1].images[Game.gameManager.crSec / 20];
 
+        for (int i = 0; i < 3; i++) {
+            Game.gauge.levelBtns[i].CheckLocked();
+        }
     }
 
     public void ChangeImage(int num) {

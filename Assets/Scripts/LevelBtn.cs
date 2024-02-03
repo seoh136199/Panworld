@@ -6,15 +6,17 @@ using UnityEngine.UI;
 public class LevelBtn : MonoBehaviour {
 
     public int level;
-    public bool thisLevelOn = false, isActive = true;
+    public bool thisLevelOn = false, isActive = true, isLocked = false;
     [SerializeField] private int maxGoodsCnt = 10, inputUnit = 10;
     private Image bgImage, gaugeLineImage, myImage;
-    [SerializeField] private Sprite bgSprite, gaugeLineSprite, btnOnSprite, btnOffSprite;
+    [SerializeField] private Sprite bgSprite, gaugeLineSprite, btnOnSprite, btnOffSprite, lockedSprite;
 
     private void Start() {
         myImage = GetComponent<Image>();
         bgImage = GameObject.Find("AlterPopup").GetComponent<Image>();
         gaugeLineImage = GameObject.Find("GaugeLine").GetComponent<Image>();
+
+        CheckLocked();
     }
 
     public void OnClick() {
@@ -40,6 +42,26 @@ public class LevelBtn : MonoBehaviour {
         Game.gauge.CheckGoodsBtnAvail();
     }
 
+    public void CheckLocked() {
+        if (level == 1) isLocked = false;
+        if (level == 2) {
+            if (Game.castle.level >= 2) isLocked = false;
+            else isLocked = true;
+        }
+        if (level == 3) {
+            if (Game.castle.level >= 4) isLocked = false;
+            else isLocked = true;
+        }
+
+        if (isLocked) {
+            myImage.sprite = lockedSprite;
+            Deactive();
+        }
+        if (!isLocked && isActive) {
+            SetActive();
+        }
+    }
+
     public void SetOff() {
         thisLevelOn = false;
         myImage.sprite = btnOffSprite;
@@ -47,7 +69,7 @@ public class LevelBtn : MonoBehaviour {
 
     public void SetActive() {
         isActive = true;
-        myImage.color = new(1, 1, 1, 1f);
+        if (!isLocked) myImage.color = new(1, 1, 1, 1f);
     }
 
     public void Deactive() {
