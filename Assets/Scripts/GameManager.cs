@@ -86,7 +86,7 @@ public class GameManager : MonoBehaviour {
     }
 
     private void EverySecEvent() {
-        void CheckWorkingTime(Slot crSlot, bool isExe) {
+        void CheckWorkingTime(Slot crSlot) {
             Member crMember = crSlot.myMember;
             if (crMember == null) return;
             if (crMember.isExhausted) return;
@@ -125,12 +125,12 @@ public class GameManager : MonoBehaviour {
 
         for (int i = 0; i < Game.levelToSlots[0, Game.castle.level]; i++) {
             Slot crSlot = Game.gameManager.executiveSlots[i].GetComponent<Slot>();
-            CheckWorkingTime(crSlot, true);
+            CheckWorkingTime(crSlot);
         }
 
         for (int i = 0; i < Game.levelToSlots[1, Game.castle.level]; i++) {
             Slot crSlot = Game.gameManager.workSlots[i].GetComponent<Slot>();
-            CheckWorkingTime(crSlot, false);
+            CheckWorkingTime(crSlot);
         }
 
         for (int i = 0; i < Game.levelToSlots[2, Game.castle.level]; i++) {
@@ -215,13 +215,16 @@ public class GameManager : MonoBehaviour {
                 mouseDownSlot.PutMember(mouseDownMember.gameObject);
             }
             else {
-                if (crSlot.slotType == Game.SlotType.work) mouseDownMember.restingTime = 0;
-                if (crSlot.slotType == Game.SlotType.work) mouseDownMember.isRecovered = false;
+                if ((int)crSlot.slotType <= 1) mouseDownMember.restingTime = 0;
+                if ((int)crSlot.slotType <= 1) mouseDownMember.isRecovered = false;
 
-                if ((int)mouseDownSlot.slotType + (int)crSlot.slotType >= 2 
-                    && mouseDownSlot.slotType != crSlot.slotType) {
-                    mouseDownMember.ResetBgBar(crSlot.slotType == Game.SlotType.work);
+                if (crSlot.slotType == Game.SlotType.executive) mouseDownMember.BeExe();
+                else mouseDownMember.QuitExe();
+
+                if (mouseDownSlot.slotType != crSlot.slotType) {
+                    mouseDownMember.ResetBgBar((int)crSlot.slotType <= 1);
                 }
+
                 crSlot.PutMember(mouseDownMember.gameObject);
             }
             mouseDownMember.SetDragging(false);
@@ -254,11 +257,10 @@ public class GameManager : MonoBehaviour {
             Game.Part goodsType = crMember.GetGoods();
 
             deltaGoods[(int)goodsType] += crMember.throughput;
-            if (isExe) deltaGoods[(int)goodsType] += Game.exePluesThroughput;
+            //if (isExe) deltaGoods[(int)goodsType] += Game.exePluesThroughput;
             if (crMember.part == goodsType) {
                 deltaGoods[(int)goodsType] += crMember.bonusThroughput;
-                if (isExe) deltaGoods[(int)goodsType] += Game.exePluesBonusThroughput;
-                //보너스 얻을 땐 효과가 있으면 좋겠는데
+                //if (isExe) deltaGoods[(int)goodsType] += Game.exePluesBonusThroughput;
             }
         }
 
@@ -292,8 +294,8 @@ public class GameManager : MonoBehaviour {
     }
 
     void Update() {
-        CalTime();
         MemberClickAndDrop();
         MemberDrag();
+        CalTime(); 
     }
 }

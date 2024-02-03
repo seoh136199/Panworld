@@ -66,6 +66,22 @@ public class Member : MonoBehaviour {
         maxWorkTime = Game.levelToWorktime[(int)memberType, level] * Game.WEEK_TO_SEC;
     }
 
+    public void BeExe() {
+        throughput = Game.levelToThroughput[(int)memberType, level] + Game.exePluesThroughput;
+        bonusThroughput = Game.levelToBonusThroughput[(int)memberType, level] + Game.exePluesBonusThroughput;
+        maxWorkTime = (Game.levelToWorktime[(int)memberType, level] + Game.exePluesWorktime) * Game.WEEK_TO_SEC;
+
+        if (isExhausted) workingTime = maxWorkTime;
+    }
+
+    public void QuitExe() {
+        throughput = Game.levelToThroughput[(int)memberType, level];
+        bonusThroughput = Game.levelToBonusThroughput[(int)memberType, level];
+        maxWorkTime = Game.levelToWorktime[(int)memberType, level] * Game.WEEK_TO_SEC;
+
+        if (isExhausted) workingTime = maxWorkTime;
+    }
+
     public void ChangeName(string newName) {
         name = newName;
     }
@@ -74,10 +90,12 @@ public class Member : MonoBehaviour {
         if (isDragging) {
             myCollider.enabled = false;
             myFace.color = new(myFace.color.r, myFace.color.g, myFace.color.b, 0.5f);
+            myBg.color = new(myBg.color.r, myBg.color.g, myBg.color.b, 0f);
         }
         else {
             myCollider.enabled = true;
             myFace.color = new(myFace.color.r, myFace.color.g, myFace.color.b, 1);
+            myBg.color = new(myBg.color.r, myBg.color.g, myBg.color.b, 1f);
         }
     }
 
@@ -101,8 +119,6 @@ public class Member : MonoBehaviour {
         float crRatio = (float)crTime / maxTime;
         float nextRatio = (float)(crTime + 1) / maxTime;
 
-        Debug.Log(crTime + " " + maxTime);
-
         RectTransform targetTransform = myBg.GetComponent<RectTransform>();
         if (isWorking) myBg.GetComponent<Image>().color = new(255f / 255, 84f / 255, 84f / 255);
         else myBg.GetComponent<Image>().color = new(100f / 255, 255f / 255, 81f / 255);
@@ -121,11 +137,18 @@ public class Member : MonoBehaviour {
     }
 
     public void ResetBgBar(bool isWorking) {
+        StopAllCoroutines();
+
         RectTransform targetTransform = myBg.GetComponent<RectTransform>();
 
         int crTime, maxTime;
         if (isWorking) { crTime = workingTime; maxTime = maxWorkTime; }
         else { crTime = restingTime; maxTime = 10; }
+
+        if (isWorking && crTime >= maxTime) {
+            crTime = maxTime;
+            isExhausted = true;
+        }
 
         float crRatio = (float)crTime / maxTime;
 
