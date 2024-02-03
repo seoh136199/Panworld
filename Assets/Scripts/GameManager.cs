@@ -11,6 +11,7 @@ public class Game {
     public static GameManager gameManager;
     public static BgImage bgImage;
     public static Castle castle;
+    public static BtnActions btnActions;
 
     public enum Part { programming, design, art }
     public enum MemberType { probationary, regular, honorary }
