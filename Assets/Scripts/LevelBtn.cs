@@ -57,9 +57,11 @@ public class LevelBtn : MonoBehaviour {
             myImage.sprite = lockedSprite;
             Deactive();
         }
-        if (!isLocked && isActive) {
-            SetActive();
+        if (!isLocked) {
+            if (thisLevelOn) myImage.sprite = btnOnSprite;
+            else myImage.sprite = btnOffSprite;
         }
+        if (isActive) SetActive();
     }
 
     public void SetOff() {

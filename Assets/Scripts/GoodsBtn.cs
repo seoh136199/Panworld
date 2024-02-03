@@ -26,6 +26,7 @@ public class GoodsBtn : MonoBehaviour {
         Debug.Log(crUnit);
 
         CheckUnitAvail();
+        Game.castle.CheckLevelUpAvail();
         Game.gameManager.SetGoodsText();
     }
 

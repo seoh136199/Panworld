@@ -22,15 +22,17 @@ public class Slot : MonoBehaviour {
         SetImage();
     }
 
-    private void SetImage() {
+    public void SetImage() {
         if (id >= Game.levelToSlots[(int)slotType, Game.castle.level]) {
             isLocked = true;
             myImage.sprite = lockImage;
         }
         else if (isFill) {
+            isLocked = false;
             myImage.sprite = fillImage;
         }
         else {
+            isLocked = false;
             myImage.sprite = emptyImage;
         }
     }
@@ -50,6 +52,8 @@ public class Slot : MonoBehaviour {
         myMember.GetComponent<RectTransform>().anchoredPosition = GetCombinedAnchoredPosition();
         if (slotType == Game.SlotType.work) Game.gameManager.crWorkerSlotRemainCnt--;
         else if (slotType == Game.SlotType.rest) Game.gameManager.crResterSlotRemainCnt--;
+
+        SetImage();
     }
 
     public void RemoveMember() {
@@ -58,6 +62,8 @@ public class Slot : MonoBehaviour {
         myMember = null;
         if (slotType == Game.SlotType.work) Game.gameManager.crWorkerSlotRemainCnt++;
         else if (slotType == Game.SlotType.rest) Game.gameManager.crResterSlotRemainCnt++;
+
+        SetImage();
     }
 
     public void SetLimited(bool isLimited) {
@@ -66,10 +72,6 @@ public class Slot : MonoBehaviour {
         this.isLimited = isLimited;
         if (!isLocked && isLimited) myImage.sprite = limitImage;
         else SetImage();
-    }
-
-    void Update() {
-        
     }
 
 

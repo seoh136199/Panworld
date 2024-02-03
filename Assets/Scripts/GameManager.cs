@@ -34,7 +34,7 @@ public class Game {
 
     public static int[] levelToInterval = { 0, 10, 8, 6, 4, 2 };
 
-    public static int[] upgradeCost = { 80, 300, 1000, 3800, 10000 };
+    public static int[] upgradeCost = { 300, 1000, 3800, 10000 };
 
 }
 
@@ -325,6 +325,7 @@ public class GameManager : MonoBehaviour {
         Debug.Log(debug);
 
         Game.gauge.CheckGoodsBtnAvail();
+        Game.castle.CheckLevelUpAvail();
         SetGoodsText();
     }
 
