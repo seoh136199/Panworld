@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 
 public class Member : MonoBehaviour {
 
-    [SerializeField] private string name;
+    public string myName;
     [SerializeField] private int entryWeek;
     public int level, throughput, bonusThroughput, maxWorkTime;
     public Game.Part part;
@@ -34,7 +34,7 @@ public class Member : MonoBehaviour {
         bonusThroughput = Game.levelToBonusThroughput[(int)memberType, level];
         maxWorkTime = Game.levelToWorktime[(int)memberType, level] * Game.WEEK_TO_SEC;
 
-        this.name = name;
+        this.myName = name;
         this.level = level;
         this.entryWeek = timeWeek;
 
@@ -91,7 +91,7 @@ public class Member : MonoBehaviour {
     }
 
     public void ChangeName(string newName) {
-        name = newName;
+        myName = newName;
     }
 
     public void SetDragging(bool isDragging) {

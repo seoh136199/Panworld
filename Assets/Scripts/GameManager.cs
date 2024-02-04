@@ -36,14 +36,14 @@ public class Game {
 
     public static int[] levelToInterval = { 0, 10, 8, 6, 4, 2 };
 
-    public static int[] upgradeCost = { 300, 1000, 3800, 10000 };
+    public static int[] upgradeCost = { 80, 300, 1000, 3800, 10000 };
 
 }
 
 public class GameManager : MonoBehaviour {
 
-    [SerializeField] private int crYear = 0;
-    [SerializeField] private int crWeek = 0;
+    public int crYear = 0;
+    public int crWeek = 0;
     [SerializeField] private int preSec = 0;
     public int crSec = 0;
     [SerializeField] private int crSecAfterLevelup = 0;
@@ -58,20 +58,26 @@ public class GameManager : MonoBehaviour {
     public Slot[] restSlots = new Slot[8];
 
     [SerializeField] private GameObject slotArea, detailArea;
+    public GameObject endingPopup;
     [SerializeField] private Member mouseDownMember, detailMember;
     [SerializeField] private Slot mouseDownSlot;
     [SerializeField] private bool isDraging = false, isDetailAreaOn = false;
     private TextMeshProUGUI[] goodsTexts = new TextMeshProUGUI[3];
     private TextMeshProUGUI dateText;
 
+    public int inCount = 0, outCount = 0;
+
     public int crWorkerSlotRemainCnt = 0, crResterSlotRemainCnt = 0;
 
     public int[] goods = new int[3] {0, 0, 0};
+    public int[] goodsTotal = new int[3] {0, 0, 0};
 
     [SerializeField] private string nameDebug; //
     [SerializeField] private int levelDebug, pRatioDebug, dRatioDebug, aRatioDebug; //
 
     private void CalTime() {
+        if (Game.castle.isEnding) return;
+
         timeSecDouble += Time.deltaTime;
         crSecDouble += Time.deltaTime;
         crSec = (int)crSecDouble;
@@ -192,6 +198,8 @@ public class GameManager : MonoBehaviour {
                 break;
             }
         }
+
+        inCount++;
     }
 
     private void MemberClickAndDrop() {
@@ -322,6 +330,7 @@ public class GameManager : MonoBehaviour {
         for (int i = 0; i < 3; i++) {
             debug += deltaGoods[i] + " ";
             goods[i] += deltaGoods[i];
+            goodsTotal[i] += deltaGoods[i];
         }
         debug += "Ãß°¡µÊ";
         Debug.Log(debug);
@@ -359,6 +368,9 @@ public class GameManager : MonoBehaviour {
     void Start() {
         slotArea = GameObject.Find("SlotArea");
         detailArea = GameObject.Find("DetailArea");
+        endingPopup = GameObject.Find("EndingPopup");
+        endingPopup.SetActive(false);
+
         SetDetailAreaOff();
         crWorkerSlotRemainCnt = Game.levelToSlots[1, Game.castle.level];
         crResterSlotRemainCnt = Game.levelToSlots[2, Game.castle.level];

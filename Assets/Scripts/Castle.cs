@@ -25,6 +25,7 @@ public class Castle : MonoBehaviour {
     private TextMeshProUGUI titleText;
     private Image thmImage, btnImage;
     public TextMeshProUGUI[] goodsTexts = new TextMeshProUGUI[3];
+    public bool isEnding = false;
 
     private void Awake() {
         Game.castle = this;
@@ -63,7 +64,9 @@ public class Castle : MonoBehaviour {
         level++;
 
         if (level == 6) {
-            //엔딩 표출
+            Game.gameManager.endingPopup.SetActive(true);
+            Game.gameManager.endingPopup.GetComponent<EndingPopup>().OpenEndingPopup();
+            isEnding = true;
             return;
         }
 

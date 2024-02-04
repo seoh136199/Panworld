@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Result : MonoBehaviour {
 
     [SerializeField] private int pRatio, dRatio, aRatio, level;
     [SerializeField] private int pVisual, dVisual, aVisual;
     [SerializeField] private RectTransform[] bar = new RectTransform[3];
+    private string name = "±è¾Æ¹«°³";
 
     private void Start() {
         for (int i = 0; i < 3; i++) {
@@ -29,11 +31,14 @@ public class Result : MonoBehaviour {
         bar[1].sizeDelta = new(dVisual, 100);
         bar[2].sizeDelta = new(aVisual, 100);
 
+        name = "±è¾Æ¹«°³";
+        transform.GetChild(7).GetComponent<TextMeshProUGUI>().text = "ÀÌ¸§: " + name;
+
         Game.soundManager.StartBgm(0);
     }
 
     public void SendMember() {
-        Game.gameManager.AddMember("±è¾Æ¹«°³", level, pRatio, dRatio, aRatio, pVisual, dVisual, aVisual);
+        Game.gameManager.AddMember(name, level, pRatio, dRatio, aRatio, pVisual, dVisual, aVisual);
         gameObject.SetActive(false);
 
         for (int i = 0; i < 3; i++) {
