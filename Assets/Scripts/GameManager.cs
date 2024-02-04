@@ -14,6 +14,7 @@ public class Game {
     public static Castle castle;
     public static BtnActions btnActions;
     public static Gauge gauge;
+    public static GetPopup getPopup;
 
     public enum Part { programming, design, art }
     public enum MemberType { probationary, regular, honorary }
@@ -327,6 +328,7 @@ public class GameManager : MonoBehaviour {
         Game.gauge.CheckGoodsBtnAvail();
         Game.castle.CheckLevelUpAvail();
         SetGoodsText();
+        Game.getPopup.Appear(deltaGoods[0], deltaGoods[1], deltaGoods[2]);
     }
 
     public void SetGoodsText() {
@@ -341,7 +343,7 @@ public class GameManager : MonoBehaviour {
         detailMember = crMember;
         isDetailAreaOn = true;
         detailArea.SetActive(true);
-        //crMember로 이것저것 설정
+        detailArea.GetComponent<DetailArea>().SetInfo(crMember);
     }
 
     public void SetDetailAreaOff() {

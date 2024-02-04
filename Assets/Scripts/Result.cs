@@ -6,12 +6,13 @@ public class Result : MonoBehaviour {
 
     [SerializeField] private int pRatio, dRatio, aRatio, level;
     [SerializeField] private int pVisual, dVisual, aVisual;
-    private RectTransform[] bar = new RectTransform[3];
+    [SerializeField] private RectTransform[] bar = new RectTransform[3];
 
     private void Start() {
         for (int i = 0; i < 3; i++) {
             bar[i] = transform.GetChild(i + 3).GetChild(0).GetComponent<RectTransform>();
         }
+        gameObject.SetActive(false);
     }
 
     public void SetInfo(int pRatio, int dRatio, int aRatio, int level) {

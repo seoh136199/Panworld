@@ -12,8 +12,8 @@ public class Member : MonoBehaviour {
     public Game.Part part;
     public Game.MemberType memberType;
     [SerializeField] private int pRatio, dRatio, aRatio;
-    [SerializeField] private int pVisual, dVisual, aVisual;
-    [SerializeField] private Sprite[] face = new Sprite[3];
+    public int pVisual, dVisual, aVisual;
+    public Sprite face;
     [SerializeField] private Sprite sadMask, happyMask;
     public Slot mySlot;
     public int workingTime = 0, restingTime = 0;
@@ -55,7 +55,7 @@ public class Member : MonoBehaviour {
             part = Game.Part.art;
         }
 
-        myFace.sprite = face[(int)part];
+        myFace.sprite = face;
         transform.localScale = new(1, 1, 1);
         transform.transform.position = new(transform.transform.position.x, transform.transform.position.y, -0.001f);
         memberType = Game.MemberType.probationary;

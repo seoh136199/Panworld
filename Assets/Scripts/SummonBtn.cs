@@ -9,7 +9,6 @@ public class SummonBtn : MonoBehaviour {
     private GameObject result;
     private void Start() {
         result = GameObject.Find("Result");
-        result.SetActive(false);
     }
 
     public void Summon() {
