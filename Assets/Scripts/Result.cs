@@ -28,6 +28,8 @@ public class Result : MonoBehaviour {
         bar[0].sizeDelta = new(pVisual, 100);
         bar[1].sizeDelta = new(dVisual, 100);
         bar[2].sizeDelta = new(aVisual, 100);
+
+        Game.soundManager.StartBgm(0);
     }
 
     public void SendMember() {
@@ -37,6 +39,8 @@ public class Result : MonoBehaviour {
         for (int i = 0; i < 3; i++) {
             Game.gauge.goodsBtns[i].SetActiveBySummon();
         }
+
+        Game.soundManager.PlaySfx(1);
     }
 
 }

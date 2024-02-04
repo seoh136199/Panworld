@@ -94,6 +94,7 @@ public class Gauge : MonoBehaviour {
     }
 
     public void CloseAlterPopup() {
+        Game.soundManager.StartCoroutine(Game.soundManager.BgmFadeOutAndStart(1f, 0));
         Game.btnActions.alterPopup.SetActive(false);
     }
 }

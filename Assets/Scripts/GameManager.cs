@@ -14,7 +14,8 @@ public class Game {
     public static Castle castle;
     public static BtnActions btnActions;
     public static Gauge gauge;
-    public static GetPopup getPopup;
+    public static GetPopup getPopup1, getPopup2;
+    public static SoundManager soundManager;
 
     public enum Part { programming, design, art }
     public enum MemberType { probationary, regular, honorary }
@@ -328,7 +329,7 @@ public class GameManager : MonoBehaviour {
         Game.gauge.CheckGoodsBtnAvail();
         Game.castle.CheckLevelUpAvail();
         SetGoodsText();
-        Game.getPopup.Appear(deltaGoods[0], deltaGoods[1], deltaGoods[2]);
+        Game.getPopup1.Appear(deltaGoods[0], deltaGoods[1], deltaGoods[2]);
     }
 
     public void SetGoodsText() {
@@ -370,6 +371,8 @@ public class GameManager : MonoBehaviour {
         dateText = mainInfo.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
 
         SetGoodsText();
+
+        Game.soundManager.StartBgm(0);
     }
 
     void Update() {

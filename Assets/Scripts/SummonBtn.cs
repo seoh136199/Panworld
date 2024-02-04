@@ -52,5 +52,7 @@ public class SummonBtn : MonoBehaviour {
 
         GetComponent<Image>().enabled = false;
         GetComponent<Button>().enabled = false;
+
+        Game.soundManager.PlaySfx(2);
     }
 }

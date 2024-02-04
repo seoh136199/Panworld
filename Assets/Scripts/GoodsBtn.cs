@@ -28,6 +28,7 @@ public class GoodsBtn : MonoBehaviour {
         CheckUnitAvail();
         Game.castle.CheckLevelUpAvail();
         Game.gameManager.SetGoodsText();
+        Game.soundManager.PlaySfx(3);
     }
 
     public void SetUnit(int unit) {

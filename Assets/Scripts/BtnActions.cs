@@ -69,10 +69,13 @@ public class BtnActions : MonoBehaviour {
 
         if (isWorkPopupOn) SetWorkPopupOff();
         else SetWorkPopupOn();
+        Game.soundManager.PlaySfx(3);
     }
 
     public void OpenAlterPopup() {
         Game.btnActions.alterPopup.SetActive(true);
+        Game.soundManager.PlaySfx(3);
+        StartCoroutine(Game.soundManager.BgmFadeOutAndStart(1f, 1));
     }
 
 }

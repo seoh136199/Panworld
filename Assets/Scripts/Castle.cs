@@ -50,6 +50,7 @@ public class Castle : MonoBehaviour {
         castlePopup.SetActive(true);
         SetPopupInfo();
         CheckLevelUpAvail();
+        Game.soundManager.PlaySfx(3);
     }
 
     public void UpgradeUIClose() {
@@ -62,7 +63,8 @@ public class Castle : MonoBehaviour {
         level++;
 
         if (level == 6) {
-            //엔딩
+            //엔딩 표출
+            return;
         }
 
         image0.sprite = imagesInfos[level - 1].images[Game.gameManager.crSec / 20];
@@ -91,6 +93,7 @@ public class Castle : MonoBehaviour {
 
         SetPopupInfo();
         CheckLevelUpAvail();
+        Game.soundManager.PlaySfx(2);
     }
 
     public void CheckLevelUpAvail() {

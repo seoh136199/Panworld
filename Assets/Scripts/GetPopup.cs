@@ -5,11 +5,13 @@ using UnityEngine.UI;
 using TMPro;
 
 public class GetPopup : MonoBehaviour {
+    public int id;
     private Image[] iconImages = new Image[3];
     private TextMeshProUGUI[] getTexts = new TextMeshProUGUI[3];
 
     private void Awake() {
-        Game.getPopup = this;
+        if (id == 1) Game.getPopup1 = this;
+        if (id == 2) Game.getPopup2 = this;
     }
 
     void Start() {
@@ -29,7 +31,7 @@ public class GetPopup : MonoBehaviour {
             float alpha;
 
             while (t < 1) {
-                alpha = Mathf.Min(Mathf.Sin(t * Mathf.PI) * 1.3f, 1f);
+                alpha = Mathf.Min(Mathf.Sin(t * Mathf.PI) * 1.3f, 0.9f);
 
                 getTexts[0].color = new(getTexts[0].color.r, getTexts[0].color.g, getTexts[0].color.b, alpha);
                 getTexts[1].color = new(getTexts[1].color.r, getTexts[1].color.g, getTexts[1].color.b, alpha);

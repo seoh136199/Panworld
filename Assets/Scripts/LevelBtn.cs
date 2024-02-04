@@ -40,6 +40,7 @@ public class LevelBtn : MonoBehaviour {
             Game.gauge.goodsBtns[i].SetUnit(inputUnit);
         }
         Game.gauge.CheckGoodsBtnAvail();
+        Game.soundManager.PlaySfx(3);
     }
 
     public void CheckLocked() {

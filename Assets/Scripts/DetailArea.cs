@@ -26,12 +26,18 @@ public class DetailArea : MonoBehaviour {
 
     public void Kill() {
         crMember.mySlot.RemoveMember();
-        Game.gameManager.goods[0] += crMember.pVisual * crMember.level;
-        Game.gameManager.goods[1] += crMember.dVisual * crMember.level;
-        Game.gameManager.goods[2] += crMember.aVisual * crMember.level;
+        Game.gameManager.goods[0] += (int)(crMember.pVisual * crMember.level * 0.7f);
+        Game.gameManager.goods[1] += (int)(crMember.dVisual * crMember.level * 0.7f);
+        Game.gameManager.goods[2] += (int)(crMember.aVisual * crMember.level * 0.7f);
         Destroy(crMember.gameObject);
         Game.gameManager.SetGoodsText();
         Game.gameManager.SetDetailAreaOff();
+
+        Game.getPopup2.Appear((int)(crMember.pVisual * crMember.level * 0.7f),
+            (int)(crMember.dVisual * crMember.level * 0.7f),
+            (int)(crMember.aVisual * crMember.level * 0.7f));
+
+        Game.soundManager.PlaySfx(1);
     }
 
 }
