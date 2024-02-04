@@ -94,6 +94,12 @@ public class Castle : MonoBehaviour {
             crSlot.SetImage();
         }
 
+        Game.gameManager.crWorkerSlotRemainCnt
+            += Game.levelToSlots[1, level] - Game.levelToSlots[1, level - 1];
+
+        Game.gameManager.crResterSlotRemainCnt
+            += Game.levelToSlots[2, level] - Game.levelToSlots[2, level - 1];
+
         SetPopupInfo();
         CheckLevelUpAvail();
         Game.soundManager.PlaySfx(2);
@@ -147,7 +153,7 @@ public class Castle : MonoBehaviour {
                 image0.sprite = imagesInfos[level - 1].images[(num + 1) % 2];
                 image1.sprite = imagesInfos[level - 1].images[num];
                 image1.color = new(1, 1, 1, t);
-                t += fadeSpeed * Time.deltaTime;
+                t += fadeSpeed * Time.deltaTime * Game.gameManager.speedWeight;
                 yield return null;
             }
 

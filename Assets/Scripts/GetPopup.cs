@@ -39,7 +39,7 @@ public class GetPopup : MonoBehaviour {
                 iconImages[0].color = new(1, 1, 1, alpha);
                 iconImages[1].color = new(1, 1, 1, alpha);
                 iconImages[2].color = new(1, 1, 1, alpha);
-                t += fadeSpeed * Time.deltaTime;
+                t += fadeSpeed * Time.deltaTime * Game.gameManager.speedWeight;
                 yield return null;
             }
 

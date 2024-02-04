@@ -56,7 +56,7 @@ public class Slot : MonoBehaviour {
         SetImage();
     }
 
-    public void RemoveMember() {
+    public void RemoveMember() { 
         isFill = false;
         myMember.GetComponent<Member>().mySlot = null;
         myMember = null;

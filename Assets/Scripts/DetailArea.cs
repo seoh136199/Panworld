@@ -11,13 +11,18 @@ public class DetailArea : MonoBehaviour {
     private Member crMember;
 
     private void Start() {
+        //Portrait = transform.GetChild(1).GetComponent<Image>();
+        //for (int i = 0; i < 3; i++) {
+        //    bar[i] = transform.GetChild(i + 2).GetComponent<RectTransform>();
+        //}
+    }
+
+    public void SetInfo(Member crMember) {
         Portrait = transform.GetChild(1).GetComponent<Image>();
         for (int i = 0; i < 3; i++) {
             bar[i] = transform.GetChild(i + 2).GetComponent<RectTransform>();
         }
-    }
 
-    public void SetInfo(Member crMember) {
         this.crMember = crMember;
         Portrait.sprite = crMember.face;
         bar[0].sizeDelta = new(crMember.pVisual, 100);
@@ -28,6 +33,10 @@ public class DetailArea : MonoBehaviour {
         if (crMember.part == Game.Part.programming) text += "파트: 프로그래밍\r\n";
         if (crMember.part == Game.Part.design) text += "파트: 디자인\r\n";
         if (crMember.part == Game.Part.art) text += "파트: 아트\r\n";
+
+        if (crMember.memberType == Game.MemberType.probationary) text += "분류: 수습회원\r\n";
+        if (crMember.memberType == Game.MemberType.regular) text += "파트: 정회원\r\n";
+
         text += "레벨: " + crMember.level + "\r\n";
         transform.GetChild(7).GetComponent<TextMeshProUGUI>().text = text;
     }

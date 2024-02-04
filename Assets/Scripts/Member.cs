@@ -23,7 +23,7 @@ public class Member : MonoBehaviour {
     private Image myFace, myBg, myMask;
     private BoxCollider2D myCollider;
 
-    public void Init(string name, int level, int timeWeek, 
+    public void Init(string name, Sprite avatar, int level, int timeWeek, 
         int pRatio, int dRatio, int aRatio, int pVisual, int dVisual, int aVisual) {
         myBg = transform.GetChild(0).GetComponent<Image>();
         myFace = transform.GetChild(1).GetComponent<Image>();
@@ -37,6 +37,7 @@ public class Member : MonoBehaviour {
         this.myName = name;
         this.level = level;
         this.entryWeek = timeWeek;
+        this.face = avatar;
 
         this.pRatio = pRatio;
         this.dRatio = dRatio;
@@ -137,7 +138,7 @@ public class Member : MonoBehaviour {
             float t = 0, fadeSpeed = 1f;
             while (t < 1) {
                 targetTransform.localScale = new(1, Mathf.Lerp(crRatio, nextRatio, t), 1);
-                t += fadeSpeed * Time.deltaTime;
+                t += fadeSpeed * Time.deltaTime * Game.gameManager.speedWeight;
                 yield return null;
             }
             targetTransform.localScale = new(1, nextRatio, 1);
@@ -177,7 +178,7 @@ public class Member : MonoBehaviour {
         float t = 0, fadeSpeed = 5f;
         while (t < 1) {
             maskWeight = t;
-            t += fadeSpeed * Time.deltaTime;
+            t += fadeSpeed * Time.deltaTime * Game.gameManager.speedWeight;
             yield return null;
         }
         maskWeight = 1;

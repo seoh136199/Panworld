@@ -20,6 +20,7 @@ public class LevelBtn : MonoBehaviour {
     }
 
     public void OnClick() {
+        if (isLocked) return;
         if (thisLevelOn) return;
         if (!isActive) return;
 

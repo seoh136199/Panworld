@@ -2,13 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class Result : MonoBehaviour {
+
+    private string[] nameSet = { "김민지", "박지석", "류지민", "최승현", "도지훈", "김예랑", "이상혁", "이상현", "신혜원", "김준우", "조경열", "백민경", "오재오", "오지환", "유정수", "이재혁", "전지우", "진새연", "곽현성", "홍기태", "이한솔", "뭐있지", "김지연", "이하민", "페이커", "이강인", "손흥민", "사재사", "삼재삼" };
+    [SerializeField] private Sprite[] avatars = new Sprite[72];
 
     [SerializeField] private int pRatio, dRatio, aRatio, level;
     [SerializeField] private int pVisual, dVisual, aVisual;
     [SerializeField] private RectTransform[] bar = new RectTransform[3];
     private string name = "김아무개";
+    private Sprite myAvatar;
 
     private void Start() {
         for (int i = 0; i < 3; i++) {
@@ -31,14 +37,20 @@ public class Result : MonoBehaviour {
         bar[1].sizeDelta = new(dVisual, 100);
         bar[2].sizeDelta = new(aVisual, 100);
 
-        name = "김아무개";
+        name = nameSet[Random.Range(0, 29)];
+        myAvatar = avatars[Random.Range(0, 72)];
         transform.GetChild(7).GetComponent<TextMeshProUGUI>().text = "이름: " + name;
+        transform.GetChild(1).GetComponent<Image>().sprite = myAvatar;
 
         Game.soundManager.StartBgm(0);
     }
 
     public void SendMember() {
-        Game.gameManager.AddMember(name, level, pRatio, dRatio, aRatio, pVisual, dVisual, aVisual);
+        if (Game.gameManager.crWorkerSlotRemainCnt + Game.gameManager.crResterSlotRemainCnt == 0) {
+            return;
+        }
+
+        Game.gameManager.AddMember(name, myAvatar, level, pRatio, dRatio, aRatio, pVisual, dVisual, aVisual);
         gameObject.SetActive(false);
 
         for (int i = 0; i < 3; i++) {

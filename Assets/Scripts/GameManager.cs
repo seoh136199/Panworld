@@ -72,14 +72,16 @@ public class GameManager : MonoBehaviour {
     public int[] goods = new int[3] {0, 0, 0};
     public int[] goodsTotal = new int[3] {0, 0, 0};
 
+    public int speedWeight = 1;
+
     [SerializeField] private string nameDebug; //
     [SerializeField] private int levelDebug, pRatioDebug, dRatioDebug, aRatioDebug; //
 
     private void CalTime() {
         if (Game.castle.isEnding) return;
 
-        timeSecDouble += Time.deltaTime;
-        crSecDouble += Time.deltaTime;
+        timeSecDouble += Time.deltaTime * speedWeight;
+        crSecDouble += Time.deltaTime * speedWeight;
         crSec = (int)crSecDouble;
 
         if (crSec >= Game.WEEK_TO_SEC) {
@@ -172,15 +174,15 @@ public class GameManager : MonoBehaviour {
         Game.castle.ChangeImage(num);
     }
 
-    [ContextMenu("AddMemberDebug")]
-    private void AddMemberDebug() {
-        AddMember(nameDebug, levelDebug, pRatioDebug, dRatioDebug, aRatioDebug, pRatioDebug, dRatioDebug, aRatioDebug);
-    }
+    //[ContextMenu("AddMemberDebug")]
+    //private void AddMemberDebug() {
+    //    AddMember(nameDebug, levelDebug, pRatioDebug, dRatioDebug, aRatioDebug, pRatioDebug, dRatioDebug, aRatioDebug);
+    //}
 
-    public void AddMember(string name, int level, int pRatio, int dRatio, int aRatio, int pVisual, int dVisual, int aVisual) {
+    public void AddMember(string name, Sprite avatar, int level, int pRatio, int dRatio, int aRatio, int pVisual, int dVisual, int aVisual) {
         GameObject newMember = Instantiate(memberPrefab);
         newMember.transform.SetParent(slotArea.transform);
-        newMember.GetComponent<Member>().Init(name, level, timeWeek, pRatio, dRatio, aRatio, pVisual, dVisual, aVisual);
+        newMember.GetComponent<Member>().Init(name, avatar, level, timeWeek, pRatio, dRatio, aRatio, pVisual, dVisual, aVisual);
 
         if (crWorkerSlotRemainCnt > 0) {
             for (int i = 0; i < Game.levelToSlots[1, Game.castle.level]; i++) {
@@ -240,10 +242,11 @@ public class GameManager : MonoBehaviour {
             if (hit.collider) mouseUpObj = hit.collider.gameObject;
 
             if (hit.collider == null || !mouseUpObj.TryGetComponent<Slot>(out Slot mouseUpSlot)
-                || mouseUpSlot.isFill || mouseUpSlot.isLocked || mouseUpSlot.isLimited) {
+                /*|| mouseUpSlot.isFill*/ || mouseUpSlot.isLocked || mouseUpSlot.isLimited) {
                 mouseDownSlot.PutMember(mouseDownMember.gameObject);
             }
             else {
+
                 if ((int)mouseUpSlot.slotType <= 1) mouseDownMember.restingTime = 0;
                 if ((int)mouseUpSlot.slotType <= 1) mouseDownMember.isRecovered = false;
 
@@ -254,7 +257,17 @@ public class GameManager : MonoBehaviour {
                     mouseDownMember.ResetBgBar((int)mouseUpSlot.slotType <= 1);
                 }
 
-                mouseUpSlot.PutMember(mouseDownMember.gameObject);
+                //mouseUpSlot.PutMember(mouseDownMember.gameObject);
+
+                //if (mouseUpSlot.isFill) {
+                //    Debug.Log("d");
+                //    Member preMember = mouseUpSlot.myMember;
+                //    mouseUpSlot.PutMember(mouseDownMember.gameObject); 
+                //    mouseDownMember.mySlot.PutMember(preMember.gameObject);
+                //}
+                //else {
+                    mouseUpSlot.PutMember(mouseDownMember.gameObject);
+                //}
             }
             mouseDownMember.SetDragging(false);
 
