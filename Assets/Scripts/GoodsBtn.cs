@@ -14,7 +14,7 @@ public class GoodsBtn : MonoBehaviour {
 
     private void Start() {
         myImage = GetComponent<Image>();
-        Debug.Log(transform.childCount);
+        //Debug.Log(transform.childCount);
         myText = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         CheckUnitAvail();
     }
@@ -23,7 +23,7 @@ public class GoodsBtn : MonoBehaviour {
         if (!isActiveByUnit || !isActiveBySummon) return;
         Game.gauge.InputGoods(type);
         Game.gameManager.goods[(int)type] -= crUnit;
-        Debug.Log(crUnit);
+        //Debug.Log(crUnit);
 
         CheckUnitAvail();
         Game.castle.CheckLevelUpAvail();

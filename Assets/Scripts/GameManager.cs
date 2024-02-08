@@ -44,13 +44,13 @@ public class GameManager : MonoBehaviour {
 
     public int crYear = 0;
     public int crWeek = 0;
-    [SerializeField] private int preSec = 0;
+    [SerializeField] private int preSec = 0, preWeek;
     public int crSec = 0;
     [SerializeField] private int crSecAfterLevelup = 0;
     [SerializeField] private double crSecDouble = 0;
 
     public double timeSecDouble = 0;
-    [SerializeField] private int timeWeek = 0;
+    public int timeWeek = 0;
     [SerializeField] private GameObject memberPrefab;
 
     public Slot[] executiveSlots = new Slot[3];
@@ -59,8 +59,8 @@ public class GameManager : MonoBehaviour {
 
     [SerializeField] private GameObject slotArea, detailArea;
     public GameObject endingPopup;
-    [SerializeField] private Member mouseDownMember, detailMember;
-    [SerializeField] private Slot mouseDownSlot;
+    [SerializeField] private Member mouseDownMember, mouseUpMember, detailMember;
+    [SerializeField] private Slot mouseUpSlot, mouseDownSlot;
     [SerializeField] private bool isDraging = false, isDetailAreaOn = false;
     private TextMeshProUGUI[] goodsTexts = new TextMeshProUGUI[3];
     private TextMeshProUGUI dateText;
@@ -90,18 +90,25 @@ public class GameManager : MonoBehaviour {
             timeWeek += deltaWeek;
             crSec -= deltaWeek * Game.WEEK_TO_SEC;
             crSecDouble -= deltaWeek * Game.WEEK_TO_SEC;
-            EveryWeekEvent();
         }
         if (crWeek >= Game.YEAR_TO_WEEK) {
             int deltaYear = crWeek / Game.YEAR_TO_WEEK;
             crYear += deltaYear;
             crWeek -= deltaYear * Game.YEAR_TO_WEEK;
-            EveryYearEvent();
         }
 
         if (preSec == crSec) return;
-        EverySecEvent();
-        preSec = crSec;
+        else {
+            EverySecEvent();
+            preSec = crSec;
+        }
+
+        if (preWeek == timeWeek) return;
+        else {
+            EveryWeekEvent();
+            preWeek = timeWeek;
+        }
+        
     }
 
     private void EverySecEvent() {
@@ -163,11 +170,13 @@ public class GameManager : MonoBehaviour {
             member.GetComponent<Member>().PromotionCheck(timeWeek);
         }
         SetDateText();
+
+        if (isDetailAreaOn) SetDetailAreaOn(detailMember);
     }
 
-    private void EveryYearEvent() {
-        Debug.Log("EveryYearEvent()");
-    }
+    //private void EveryYearEvent() {
+    //    Debug.Log("EveryYearEvent()");
+    //}
 
     private void TimeBoundaryEvent(int num) {
         Game.bgImage.ChangeImage(num);
@@ -241,33 +250,51 @@ public class GameManager : MonoBehaviour {
             GameObject mouseUpObj = null;
             if (hit.collider) mouseUpObj = hit.collider.gameObject;
 
-            if (hit.collider == null || !mouseUpObj.TryGetComponent<Slot>(out Slot mouseUpSlot)
-                /*|| mouseUpSlot.isFill*/ || mouseUpSlot.isLocked || mouseUpSlot.isLimited) {
+            bool isSlot = false, isMember = false;
+            if (mouseUpObj) {
+                isSlot = mouseUpObj.TryGetComponent(out mouseUpSlot);
+                isMember = mouseUpObj.TryGetComponent(out mouseUpMember);
+            }
+
+            if (!mouseUpSlot && mouseUpMember) mouseUpSlot = mouseUpMember.mySlot;
+
+            if (mouseUpObj == null || (!isSlot && !isMember)
+                || mouseUpSlot.isLocked || mouseUpSlot.isLimited) {
                 mouseDownSlot.PutMember(mouseDownMember.gameObject);
             }
             else {
 
+                //노동 슬롯으로 이동한 경우 휴식 초기화
                 if ((int)mouseUpSlot.slotType <= 1) mouseDownMember.restingTime = 0;
                 if ((int)mouseUpSlot.slotType <= 1) mouseDownMember.isRecovered = false;
-
-                if (mouseUpSlot.slotType == Game.SlotType.executive) mouseDownMember.BeExe();
-                else mouseDownMember.QuitExe();
-
-                if (mouseDownSlot.slotType != mouseUpSlot.slotType) {
-                    mouseDownMember.ResetBgBar((int)mouseUpSlot.slotType <= 1);
+                if (mouseUpMember) {
+                    if ((int)mouseDownSlot.slotType <= 1) mouseUpMember.restingTime = 0;
+                    if ((int)mouseDownSlot.slotType <= 1) mouseUpMember.isRecovered = false;
                 }
 
-                //mouseUpSlot.PutMember(mouseDownMember.gameObject);
+                //임원진으로의 설정
+                if (mouseUpSlot.slotType == Game.SlotType.executive) mouseDownMember.BeExe();
+                else mouseDownMember.QuitExe();
+                if (mouseUpMember) {
+                    if (mouseDownSlot.slotType == Game.SlotType.executive) mouseUpMember.BeExe();
+                    else mouseUpMember.QuitExe();
+                }
+                
+                //슬롯 옵션 바뀐 경우 프로그래스 바 초기화
+                if (mouseDownSlot.slotType != mouseUpSlot.slotType) {
+                    mouseDownMember.ResetBgBar((int)mouseUpSlot.slotType <= 1);
+                    if (mouseUpMember) mouseUpMember.ResetBgBar((int)mouseDownSlot.slotType <= 1);
+                }
 
-                //if (mouseUpSlot.isFill) {
-                //    Debug.Log("d");
-                //    Member preMember = mouseUpSlot.myMember;
-                //    mouseUpSlot.PutMember(mouseDownMember.gameObject); 
-                //    mouseDownMember.mySlot.PutMember(preMember.gameObject);
-                //}
-                //else {
+                if (mouseUpSlot.isFill) {
+                    Member preMember = mouseUpSlot.myMember;
+                    mouseUpSlot.RemoveMember();
                     mouseUpSlot.PutMember(mouseDownMember.gameObject);
-                //}
+                    mouseDownSlot.PutMember(preMember.gameObject);
+                }
+                else {
+                    mouseUpSlot.PutMember(mouseDownMember.gameObject);
+                }
             }
             mouseDownMember.SetDragging(false);
 
@@ -304,8 +331,8 @@ public class GameManager : MonoBehaviour {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
 
-        GameObject mouseDownObj = hit.collider.gameObject;
         if (!hit.collider) return;
+        GameObject mouseDownObj = hit.collider.gameObject;
         if (!mouseDownObj.TryGetComponent<Member>(out Member crMember)) return;
 
         if (!isDetailAreaOn) SetDetailAreaOn(crMember);
@@ -339,14 +366,14 @@ public class GameManager : MonoBehaviour {
             ProduceGoodBySlot(crSlot, false);
         }
 
-        string debug = "재화 ";
+        //string debug = "재화 ";
         for (int i = 0; i < 3; i++) {
-            debug += deltaGoods[i] + " ";
+            //debug += deltaGoods[i] + " ";
             goods[i] += deltaGoods[i];
             goodsTotal[i] += deltaGoods[i];
         }
-        debug += "추가됨";
-        Debug.Log(debug);
+        //debug += "추가됨";
+        //Debug.Log(debug);
 
         Game.gauge.CheckGoodsBtnAvail();
         Game.castle.CheckLevelUpAvail();

@@ -12,16 +12,16 @@ public class SummonBtn : MonoBehaviour {
     }
 
     public void Summon() {
-        Debug.Log("소환 버튼 누름");
+        //Debug.Log("소환 버튼 누름");
 
-        int pCnt = Game.gauge.inputGoodsCnt[0] * Game.gauge.inputUnit + Random.Range(-30, 40 + 1);
-        int dCnt = Game.gauge.inputGoodsCnt[1] * Game.gauge.inputUnit + Random.Range(-30, 40 + 1);
-        int aCnt = Game.gauge.inputGoodsCnt[2] * Game.gauge.inputUnit + Random.Range(-30, 40 + 1);
+        int pCnt = Game.gauge.inputGoodsCnt[0] * Game.gauge.inputUnit + Random.Range(-20, 40 + 1);
+        int dCnt = Game.gauge.inputGoodsCnt[1] * Game.gauge.inputUnit + Random.Range(-20, 40 + 1);
+        int aCnt = Game.gauge.inputGoodsCnt[2] * Game.gauge.inputUnit + Random.Range(-20, 40 + 1);
         pCnt = Mathf.Max(0, pCnt);
         dCnt = Mathf.Max(0, dCnt);
         aCnt = Mathf.Max(0, aCnt);
 
-        Debug.Log(pCnt + ", " + dCnt + ", " + aCnt);
+        //Debug.Log(pCnt + ", " + dCnt + ", " + aCnt);
 
         int[] cntNew = new int[3];
         cntNew[0] = (int)((float)pCnt / (pCnt + dCnt + aCnt) * 100);
@@ -31,7 +31,7 @@ public class SummonBtn : MonoBehaviour {
         int loss = 100 - cntNew[0] - cntNew[1] - cntNew[2];
         cntNew[Random.Range(0, 3)] += loss;
 
-        Debug.Log(cntNew[0] + ", " + cntNew[1] + ", " + cntNew[2]);
+        //Debug.Log(cntNew[0] + ", " + cntNew[1] + ", " + cntNew[2]);
 
         result.SetActive(true);
         result.GetComponent<Result>().SetInfo(cntNew[0], cntNew[1], cntNew[2], Game.gauge.crLevel);

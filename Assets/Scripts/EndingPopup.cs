@@ -9,7 +9,7 @@ public class EndingPopup : MonoBehaviour {
     public Sprite[] underSprite = new Sprite[2];
 
     public void OpenEndingPopup() {
-        if (Game.gameManager.crYear >= 5) transform.GetChild(1).GetComponent<Image>().sprite = underSprite[1];
+        if (Game.gameManager.crYear >= 4) transform.GetChild(1).GetComponent<Image>().sprite = underSprite[1];
         else transform.GetChild(1).GetComponent<Image>().sprite = underSprite[0];
 
         transform.GetChild(2).GetComponent<TextMeshProUGUI>().text 

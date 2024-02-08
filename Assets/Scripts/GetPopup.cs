@@ -27,7 +27,7 @@ public class GetPopup : MonoBehaviour {
         getTexts[2].text = "+" + aGet;
 
         IEnumerator Fade() {
-            float t = 0, fadeSpeed = 0.6f;
+            float t = 0, fadeSpeed = 0.5f;
             float alpha;
 
             while (t < 1) {
@@ -52,6 +52,7 @@ public class GetPopup : MonoBehaviour {
             iconImages[2].color = new(1, 1, 1, alpha);
         }
 
+        StopCoroutine(Fade());
         StartCoroutine(Fade());
     }
 }

@@ -34,8 +34,12 @@ public class DetailArea : MonoBehaviour {
         if (crMember.part == Game.Part.design) text += "파트: 디자인\r\n";
         if (crMember.part == Game.Part.art) text += "파트: 아트\r\n";
 
-        if (crMember.memberType == Game.MemberType.probationary) text += "분류: 수습회원\r\n";
-        if (crMember.memberType == Game.MemberType.regular) text += "파트: 정회원\r\n";
+        if (crMember.memberType == Game.MemberType.probationary) text += "회원 분류: 수습회원\r\n";
+        if (crMember.memberType == Game.MemberType.regular) text += "회원 분류: 정회원\r\n";
+
+        int crYear = (Game.gameManager.timeWeek - crMember.entryWeek) / 12;
+        int crWeek = (Game.gameManager.timeWeek - crMember.entryWeek) % 12;
+        text += "활동 기간: " + crYear + "년 " + crWeek + "주\r\n";
 
         text += "레벨: " + crMember.level + "\r\n";
         transform.GetChild(7).GetComponent<TextMeshProUGUI>().text = text;

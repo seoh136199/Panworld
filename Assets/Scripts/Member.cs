@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 public class Member : MonoBehaviour {
 
     public string myName;
-    [SerializeField] private int entryWeek;
+    public int entryWeek;
     public int level, throughput, bonusThroughput, maxWorkTime;
     public Game.Part part;
     public Game.MemberType memberType;

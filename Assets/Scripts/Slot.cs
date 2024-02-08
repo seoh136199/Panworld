@@ -67,7 +67,7 @@ public class Slot : MonoBehaviour {
     }
 
     public void SetLimited(bool isLimited) {
-        if (isFill) return;
+        //if (isFill) return;
 
         this.isLimited = isLimited;
         if (!isLocked && isLimited) myImage.sprite = limitImage;

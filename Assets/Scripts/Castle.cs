@@ -148,7 +148,7 @@ public class Castle : MonoBehaviour {
             image1.sprite = imagesInfos[level - 1].images[num];
             image0.color = new(1, 1, 1, 1);
 
-            float t = 0, fadeSpeed = 2.5f;
+            float t = 0, fadeSpeed = 2.6f;
             while (t < 1) {
                 image0.sprite = imagesInfos[level - 1].images[(num + 1) % 2];
                 image1.sprite = imagesInfos[level - 1].images[num];
@@ -156,7 +156,16 @@ public class Castle : MonoBehaviour {
                 t += fadeSpeed * Time.deltaTime * Game.gameManager.speedWeight;
                 yield return null;
             }
+            t = 0;
+            while (t < 1) {
+                image0.sprite = imagesInfos[level - 1].images[(num + 1) % 2];
+                image1.sprite = imagesInfos[level - 1].images[num];
+                image0.color = new(1, 1, 1, 1 - t);
+                t += fadeSpeed * Time.deltaTime * Game.gameManager.speedWeight;
+                yield return null;
+            }
 
+            image0.color = new(1, 1, 1, 0);
             image1.color = new(1, 1, 1, 1);
             isFading = false;
         }
